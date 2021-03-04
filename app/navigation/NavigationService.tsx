@@ -12,7 +12,17 @@ function goBack() {
   navigationRef.current?.goBack();
 }
 
-export default {
+function goBlankPage() {
+  navigate("BlankPage");
+}
+
+function goBasicReport() {
+  navigate("BasicReport");
+}
+
+export const navigationService =  {
   navigate,
   goBack,
+  goBlankPage,
+  goBasicReport
 };

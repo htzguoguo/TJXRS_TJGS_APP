@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Text, Button } from 'react-native-paper';
+import { Text, Button, } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 
 import * as loginActions from 'app/store/actions/loginActions';
