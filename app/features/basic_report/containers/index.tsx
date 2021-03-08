@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   SafeAreaView,
   Dimensions,
@@ -28,6 +28,7 @@ import {
   Right,
   Body,
 } from "native-base";
+import { Form as FinalForm } from "react-final-form";
 import { Picker } from '@react-native-picker/picker';
 import styles from "./styles";
 import {
@@ -46,6 +47,8 @@ import {
   mock_Damage,
   mock_road_defects,
 } from "../mock_data";
+import { HighwaySelector } from "../components/Highway";
+import { ReporterSelector } from "../components/ReportDate";
 function BasicReport(props: IProps) {
   const windowWidth = Dimensions.get("window").width / 4;
 
@@ -66,6 +69,10 @@ function BasicReport(props: IProps) {
     index: 0,
     item: mock_Damage[0],
   });
+
+  const getHighwayData = useCallback((item) => {
+    console.log('You clicked ', item);
+  }, []);
 
   const render_highway_header = (item, expanded: boolean) => {
     return (
@@ -332,19 +339,25 @@ function BasicReport(props: IProps) {
     );
   };
   const dataArray = [
-    { title: "First Element", content: " " },  
+    { title: "First Element", content: " " },
   ];
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Container>
         <StandardHeader isHome={true} title={""} />
         <Content padder>
-          <Accordion
+          {
+            ReporterSelector({ getData: getHighwayData })
+          }
+          {
+            HighwaySelector({ getData: getHighwayData })
+          }
+          {/* <Accordion
             dataArray={dataArray}
             expanded={[]}
             renderHeader={render_highway_header}
             renderContent={render_highway_content}
-          />
+          /> */}
           <Accordion
             dataArray={dataArray}
             expanded={[]}
@@ -481,7 +494,7 @@ function BasicReport(props: IProps) {
                   <View style={{ flex: 1, justifyContent: "center" }}>
                     <DynamicallySelectedPicker
                       items={mock_sub_option}
-                      transparentItemRows={1}                      
+                      transparentItemRows={1}
                       onScroll={({ index, item }) => {
                         setSelectedSuboption(index);
                       }}
@@ -504,9 +517,9 @@ function BasicReport(props: IProps) {
                     <DynamicallySelectedPicker
                       items={mock_Damage}
                       transparentItemRows={1}
-                      onScroll={({index, item}) => {
+                      onScroll={({ index, item }) => {
                         console.log(index, item);
-                        setSelectedDamage({index, item});
+                        setSelectedDamage({ index, item });
                       }}
                       height={130}
                       width={windowWidth}
@@ -569,6 +582,6 @@ function BasicReport(props: IProps) {
       </Container>
     </SafeAreaView>
   );
-} 
+}
 
 export default BasicReport;

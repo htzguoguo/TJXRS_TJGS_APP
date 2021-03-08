@@ -8,6 +8,7 @@ import { navigationRef } from './NavigationService';
 
 import Login from '../features/login/containers';
 import BasicReport from '../features/basic_report/containers';
+import Setting from '../features/setting/containers';
 import Home from 'app/screens/Home';
 import ForgotPassword from 'app/screens/ForgotPassword';
 
@@ -15,6 +16,7 @@ import ThemeController from '../components/ThemeController';
 import { StatusBar } from 'react-native';
 import { ILoginState } from 'app/models/reducers/login';
 import { CustomDrawerMenu } from './CustomDrawerMenu';
+import { MenuSidebar } from './MenuSidebar';
 import BlankPage from '../features/blank/containers';
 
 const Stack = createStackNavigator();
@@ -25,11 +27,12 @@ const MenuDrawer = createDrawerNavigator();
 function MyMenuDrawer(){
   return (
     <MenuDrawer.Navigator
-      drawerContent={(props) => <CustomDrawerMenu {...props} />}
+      drawerContent={(props) => <MenuSidebar {...props} />}
       initialRouteName="BasicReport">
       <MenuDrawer.Screen name="Home" component={Home} />
       <MenuDrawer.Screen name="BlankPage" component={BlankPage} />
       <MenuDrawer.Screen name="BasicReport" component={BasicReport} />
+      <MenuDrawer.Screen name="Setting" component={Setting} />
     </MenuDrawer.Navigator>
   );
 }

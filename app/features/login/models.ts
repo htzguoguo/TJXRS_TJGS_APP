@@ -1,3 +1,4 @@
+
 export interface ILoginSuccessResponse {
   access_token: string;
   desc: string;
@@ -58,5 +59,5 @@ interface IResponse {
 
 export interface ILoginResponseState {
   type: String;
-  response: ILoginResponse;
+  response: ILoginSuccessResponse;
 }

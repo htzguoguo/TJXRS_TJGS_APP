@@ -28,6 +28,7 @@ import { composeValidators, isAlphaNumeric, isMaxLength15, isMinLength6, isMinLe
 
 import { ILoading } from '../../../models/reducers/loading';
 import { loginReducer } from '../reducers';
+import { ImageOverlay } from '../../../components/image-overlay.component';
 
 
 interface IState {
@@ -52,86 +53,87 @@ export default function Login() {
 
   return (
     <Container>
-      <Header style={{ height: 200, backgroundColor: '#FFF', borderWidth: 0 }}>
-        <Body style={{ alignItems: 'center' }}>
-          <Image
-            style={{ height: 104, width: 104, resizeMode: 'contain' }}
-            source={imagesConfig.login.header}
-          />
-          <Title style={{ color: '#000' }}>高速养护系统</Title>
-          <View padder>
-            <Text
-              style={{ color: Platform.OS === 'ios' ? '#000' : '#FFF' }}
-            ></Text>
-          </View>
-        </Body>
-      </Header>
-      <Content style={{ marginTop: 20 }}>
-        <Form
-          initialValues={{ name: 'admin123', password: '123456' }}
-          onSubmit={onLogin}
-          decorators={[focusOnError]}
-        >
-          {({ handleSubmit, pristine, submitting }) => (
-            <View>
-              <Field
-                name="name"
-                validate={isRequired}
-                warn={isRequired}
-              >
-                {
-                  field => (
-                    <Item error={field.meta.error && field.meta.touched}>
-                      <Icon
-                        active
-                        name="person-outline"
-                      />
-                      <Input
-                        placeholder="用户名"
-                        secureTextEntry={false}
-                        {...field.input}
-                      />
-                      {field.meta.touched && field.meta.error && (
-                        <Text>{field.meta.error}</Text>
-                      )}
-                    </Item>
-                  )
-                }
-              </Field>
-              <Field
-                name="password"
-                validate={composeValidators(isRequired, isAlphaNumeric, isMinLength6, isMaxLength15)}
-                warn={composeValidators(isAlphaNumeric, isMinLength6, isMaxLength15)}
-              >
-                {
-                  field => (
-                    <Item error={field.meta.error && field.meta.touched}>
-                      <Icon
-                        active
-                        name="lock-closed-outline"
-                      />
-                      <Input
-                        placeholder="密码"
-                        secureTextEntry={true}
-                        {...field.input}
-                      />
-                      {field.meta.touched && field.meta.error && (
-                        <Text>{field.meta.error}</Text>
-                      )}
-                    </Item>
-                  )
-                }
-              </Field>
-              <View padder>
-                {
-                  loadingState.isLoginLoading ? <Spinner /> :
-                    <Button block onPress={handleSubmit}>
-                      <Text>登录</Text>
-                    </Button>
-                }
+     
+        <Header style={{ height: 200, backgroundColor: '#FFF', borderWidth: 0 }}>
+          <Body style={{ alignItems: 'center' }}>
+            <Image
+              style={{ height: 104, width: 104, resizeMode: 'contain' }}
+              source={imagesConfig.login.header}
+            />
+            <Title style={{ color: '#000' }}>高速养护系统</Title>
+            <View padder>
+              <Text
+                style={{ color: Platform.OS === 'ios' ? '#000' : '#FFF' }}
+              ></Text>
+            </View>
+          </Body>
+        </Header>
+        <Content style={{ marginTop: 20 }}>
+          <Form
+            initialValues={{ name: 'admin123', password: '123456' }}
+            onSubmit={onLogin}
+            decorators={[focusOnError]}
+          >
+            {({ handleSubmit, pristine, submitting }) => (
+              <View>
+                <Field
+                  name="name"
+                  validate={isRequired}
+                  warn={isRequired}
+                >
+                  {
+                    field => (
+                      <Item error={field.meta.error && field.meta.touched}>
+                        <Icon
+                          active
+                          name="person-outline"
+                        />
+                        <Input
+                          placeholder="用户名"
+                          secureTextEntry={false}
+                          {...field.input}
+                        />
+                        {field.meta.touched && field.meta.error && (
+                          <Text>{field.meta.error}</Text>
+                        )}
+                      </Item>
+                    )
+                  }
+                </Field>
+                <Field
+                  name="password"
+                  validate={composeValidators(isRequired, isAlphaNumeric, isMinLength6, isMaxLength15)}
+                  warn={composeValidators(isAlphaNumeric, isMinLength6, isMaxLength15)}
+                >
+                  {
+                    field => (
+                      <Item error={field.meta.error && field.meta.touched}>
+                        <Icon
+                          active
+                          name="lock-closed-outline"
+                        />
+                        <Input
+                          placeholder="密码"
+                          secureTextEntry={true}
+                          {...field.input}
+                        />
+                        {field.meta.touched && field.meta.error && (
+                          <Text>{field.meta.error}</Text>
+                        )}
+                      </Item>
+                    )
+                  }
+                </Field>
+                <View padder>
+                  {
+                    loadingState.isLoginLoading ? <Spinner /> :
+                      <Button block onPress={handleSubmit}>
+                        <Text>登录</Text>
+                      </Button>
+                  }
 
-              </View>
-              {/* <View padder>
+                </View>
+                {/* <View padder>
                 {
                   loginState.error && loginState.error.length > 0 && Toast.show({
                     text: loginState.error,
@@ -142,33 +144,34 @@ export default function Login() {
                 }
               </View> */}
 
-            </View>
-          )}
-        </Form>
-        {/* <View padder>
+              </View>
+            )}
+          </Form>
+          {/* <View padder>
           <Button block onPress={onLogin}>
             <Text>登录</Text>
           </Button>
         </View> */}
-      </Content>
-      <Footer style={{ backgroundColor: '#F8F8F8' }}>
-        <View
-          style={{
-            alignItems: 'center',
-            opacity: 0.5,
-            flexDirection: 'row',
-          }}>
-          <View padder>
-            <Text style={{ color: '#000' }}>
-              服务单位:天津市交通科学研究院{' '}
-            </Text>
+        </Content>
+        <Footer style={{ backgroundColor: '#F8F8F8' }}>
+          <View
+            style={{
+              alignItems: 'center',
+              opacity: 0.5,
+              flexDirection: 'row',
+            }}>
+            <View padder>
+              <Text style={{ color: '#000' }}>
+                服务单位:天津市交通科学研究院{' '}
+              </Text>
+            </View>
+            <Image
+              source={imagesConfig.login.footer}
+              style={{ width: 42, height: 42 }}
+            />
           </View>
-          <Image
-            source={imagesConfig.login.footer}
-            style={{ width: 42, height: 42 }}
-          />
-        </View>
-      </Footer>
+        </Footer>
+     
     </Container>
   );
 }

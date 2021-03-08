@@ -8,6 +8,7 @@ import {
   ILoginRequestState,
   ILoginResponseState,
 } from './models';
+import { dropAuth, saveAuth } from '../../utils/authUtils';
 
 const initialState: ILoginState = {
   isLoggedIn: false,
@@ -29,7 +30,9 @@ export const loginReducer = createReducer(initialState, {
   [types.LOGIN_DISABLE_LOADER](state: ILoginState) {
     return { ...state };
   },
-  [types.LOGIN_RESPONSE](state: ILoginState, action: ILoginResponseState) {   
+  [types.LOGIN_RESPONSE](state: ILoginState, action: ILoginResponseState) { 
+    const user = action.response  
+    saveAuth(user.token_type, user.access_token, user.user.name);
     return {
       ...state,
       error: '',
@@ -46,6 +49,7 @@ export const loginReducer = createReducer(initialState, {
     };
   },
   [types.LOG_OUT](state: ILoginState) {
+    dropAuth();
     return {
       ...state,
       error: '',

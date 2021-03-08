@@ -4,10 +4,13 @@ import {
   DrawerContentScrollView,  
 } from "@react-navigation/drawer";
 import imageConfig from "../config/images-config";
- 
+import * as loginActions from '../features/login/actions';
   import { navigationService } from "./NavigationService";
+import { useDispatch } from "react-redux";
 
 export function CustomDrawerMenu(props) {
+  const dispatch = useDispatch();
+  const onLogout = () => dispatch(loginActions.logOut());
   return (
     <SafeAreaView style={{flex: 1}}>
       <View
@@ -45,11 +48,11 @@ export function CustomDrawerMenu(props) {
         <TouchableOpacity
           style={{marginTop: 20}}
           onPress={() => navigationService.goBlankPage()}>
-          <Text>小修专项</Text>
+          <Text>设置</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={{marginTop: 20}}
-          onPress={() => navigationService.goBlankPage()}>
+          onPress={() => onLogout}>
           <Text>退出</Text>
         </TouchableOpacity>
       </DrawerContentScrollView>

@@ -12,6 +12,7 @@ const imagesConfig = {
     setting: require("../assets/images/settings.png"),
   },
   login: {
+    backgroundImage: require('../assets/images/login-background.jpg'),
     header: require('../assets/images/construction.png'),
     header1: require('../assets/images/m3.jpg'),
     footer: require('../assets/images/er.png'),
@@ -20,7 +21,11 @@ const imagesConfig = {
     m1: require("../assets/images/m1.jpg"),
     m2: require("../assets/images/m2.jpg"),
     m3: require("../assets/images/m3.jpg"),
-  }
+  },
+  menu: {
+    cover: require("../assets/images/drawer-cover.png"),
+    logo: require("../assets/images/drawer-logo.png"),   
+  },
 };
 
 export default imagesConfig;
