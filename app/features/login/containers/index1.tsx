@@ -40,11 +40,9 @@ export interface IFormValues {
   name: string;
   password: string;
 }
-
-let focusOnError = createDecorator()
+ 
 
 export default function Login() {
-  const loginState = useSelector((state: IState) => state.loginReducer);
   const loadingState = useSelector((state: IState) => state.loadingReducer);
   const dispatch = useDispatch();
   const onLogin = (values: IFormValues,) => {
@@ -53,12 +51,27 @@ export default function Login() {
 
   return (
     <Container>
-      <ImageBackground resizeMode='cover' style={styles.backgroundImage_container} source={imagesConfig.login.backgroundImage}>
 
-      </ImageBackground>
+      <Header style={{ height: 200, backgroundColor: '#FFF', borderWidth: 0, padding: 0, margin: 0 }}>
+
+        <Body style={{ alignItems: 'center', }}>
+          <Image
+            style={{ height: 104, width: 104, resizeMode: 'contain' }}
+            source={imagesConfig.login.header}
+          />
+          <Title style={{ color: '#000' }}>高速养护系统</Title>
+          <View padder>
+            <Text
+              style={{ color: Platform.OS === 'ios' ? '#000' : '#FFF' }}
+            ></Text>
+          </View>
+        </Body>
+
+      </Header>
 
       <Content style={{ marginTop: 20, borderWidth: 0 }}>
         <InputForm onLogin={onLogin} isLoginLoading={loadingState.isLoginLoading} />
+
       </Content>
       <Footer style={{ backgroundColor: '#FFF', borderWidth: 0 }}>
         <View
@@ -82,14 +95,3 @@ export default function Login() {
     </Container>
   );
 }
-
-
-
-
-// class Login extends React.Component<Props, State> {
-//   render() {
-
-//   }
-// }
-
-// export default Login;

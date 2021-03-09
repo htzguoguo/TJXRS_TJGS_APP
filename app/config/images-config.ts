@@ -12,7 +12,7 @@ const imagesConfig = {
     setting: require("../assets/images/settings.png"),
   },
   login: {
-    backgroundImage: require('../assets/images/login-background.jpg'),
+    backgroundImage: require('../assets/images/logo-header-background.png'),
     header: require('../assets/images/construction.png'),
     header1: require('../assets/images/m3.jpg'),
     footer: require('../assets/images/er.png'),

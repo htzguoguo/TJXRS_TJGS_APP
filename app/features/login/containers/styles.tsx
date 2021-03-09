@@ -3,6 +3,11 @@ import { Dimensions, StyleSheet } from 'react-native';
 const deviceHeight = Dimensions.get('window').height;
 
 const styles: any = StyleSheet.create({
+  backgroundImage_container: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
   container: {
     position: 'absolute',
     top: 0,
