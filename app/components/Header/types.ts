@@ -1,6 +1,7 @@
-import React from "react";
+import React from 'react';
 
 export interface IProps {
   isHome: boolean;
-  title: string | React.Component;
+  body?: string | React.Component;
+  right?: string | React.Component;
 }
