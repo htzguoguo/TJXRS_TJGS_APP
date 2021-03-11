@@ -20,9 +20,14 @@ function goBasicReport() {
   navigate("BasicReport");
 }
 
+function goSample() {
+  navigate("CommodityList");
+}
+
 export const navigationService =  {
   navigate,
   goBack,
   goBlankPage,
-  goBasicReport
+  goBasicReport,
+  goSample
 };

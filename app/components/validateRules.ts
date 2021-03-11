@@ -16,3 +16,5 @@ export const isAlphaNumeric = (value: string) =>
 
   export  const composeValidators = (...validators) => value =>
   validators.reduce((error, validator) => error || validator(value), undefined)
+
+  export const mustBeNumber = value => (isNaN(value) ? '请输入数字' : undefined)

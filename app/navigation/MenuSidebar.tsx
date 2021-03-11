@@ -42,7 +42,14 @@ const datas: IMenuDataItem[]  = [
   },
   {
     name: "验收反馈",
-    route: "BlankPage",
+    route: "CommodityList",
+    icon: "repeat",
+    bg: "#C5F442",
+    types: "5"
+  },
+  {
+    name: "核查反馈",
+    route: "AppHome",
     icon: "repeat",
     bg: "#C5F442",
     types: "5"

@@ -228,7 +228,7 @@ export const HighwaySelector = (props: IProps) => {
       render={
         ({ handleSubmit, form, submitting, pristine, values }) => (
           <Accordion
-          style={{marginBottom: 5}}
+         
             dataArray={dataArray}
             expanded={[]}
             renderHeader={

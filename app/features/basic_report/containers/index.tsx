@@ -156,40 +156,17 @@ function BasicReport(props: IProps) {
     <SafeAreaView style={{ flex: 1 }}>
       <Container>
         <StandardHeader isHome={true} body="巡查上报" />
-        <Content padder>
+        <Content  >
           {
             ReporterSelector({ getData: getHighwayData })
           }
           {
             HighwaySelector({ getData: getHighwayData })
           }
-          <Card style={styles.record_item}>
-            <CardItem header bordered>
-              <Text>病害位置</Text>
-            </CardItem>
-            <CardItem bordered>
-              <Body>
-                <StationForm getData={getStationData} />
-                {/* <Grid>
-                  <Col style={styles.col}>
-                    <Image
-                      source={imagesConfig.maintain.m1}
-                      style={styles.maintain_image}></Image>
-                  </Col>
-                  <Col style={styles.col}>
-                    <Image
-                      source={imagesConfig.maintain.m2}
-                      style={styles.maintain_image}></Image>
-                  </Col>
-                  <Col style={styles.col}>
-                    <Image
-                      source={imagesConfig.maintain.m3}
-                      style={styles.maintain_image}></Image>
-                  </Col>
-                </Grid> */}
-              </Body>
-            </CardItem>
-          </Card>
+          {
+            StationForm({ getData: getHighwayData })
+          }
+          
           <Card style={styles.record_item}>
             <CardItem header bordered>
               <Text>现场照片</Text>
@@ -240,36 +217,7 @@ function BasicReport(props: IProps) {
               </Right>
             </CardItem>
           </Card>
-          <Card style={styles.record_item}>
-            <CardItem header bordered>
-              <Text>病害基本信息</Text>
-            </CardItem>
-            <CardItem bordered>
-              <Body>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}>
-                  <View style={{ flex: 1, justifyContent: "center" }}>
-                    <Text style={{ textAlign: "center" }}>案件编号</Text>
-                  </View>
-                  <View style={{ flex: 1, justifyContent: "center" }}>
-                    <Text style={{ textAlign: "center" }}>车道</Text>
-                  </View>
-                  <View style={{ flex: 1, justifyContent: "center" }}>
-                    <Text style={{ textAlign: "center" }}>巡查项目</Text>
-                  </View>
-                  <View style={{ flex: 1, justifyContent: "center" }}>
-                    <Text style={{ textAlign: "center" }}>类别</Text>
-                  </View>
-                </View>
-              </Body>
-            </CardItem>
-            {mock_reports.map((item) => render_basic_info_item(item))}
-          </Card>
+        
           <Card style={styles.record_item}>
             <CardItem header bordered>
               <Text>病害信息</Text>
@@ -382,6 +330,36 @@ function BasicReport(props: IProps) {
               </Body>
             </CardItem>
             {mock_road_defects.map((item) => render_road_defect_item(item))}
+          </Card>
+          <Card style={styles.record_item}>
+            <CardItem header bordered>
+              <Text>病害基本信息</Text>
+            </CardItem>
+            <CardItem bordered>
+              <Body>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}>
+                  <View style={{ flex: 1, justifyContent: "center" }}>
+                    <Text style={{ textAlign: "center" }}>案件编号</Text>
+                  </View>
+                  <View style={{ flex: 1, justifyContent: "center" }}>
+                    <Text style={{ textAlign: "center" }}>车道</Text>
+                  </View>
+                  <View style={{ flex: 1, justifyContent: "center" }}>
+                    <Text style={{ textAlign: "center" }}>巡查项目</Text>
+                  </View>
+                  <View style={{ flex: 1, justifyContent: "center" }}>
+                    <Text style={{ textAlign: "center" }}>类别</Text>
+                  </View>
+                </View>
+              </Body>
+            </CardItem>
+            {mock_reports.map((item) => render_basic_info_item(item))}
           </Card>
         </Content>
         <Footer>

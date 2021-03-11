@@ -2,7 +2,7 @@
  * Reducer actions related with login
  */
 import * as types from './types';
-import { ILoginResponse, ILoginSuccessResponse } from './models';
+import {ILoginSuccessResponse } from './models';
 
 
 export function requestLogin(username: string, password: string) {

@@ -16,20 +16,13 @@ interface IProps {
 
 const InitialValue: IData = { report: report_data[0], date: new Date() }
 
-export const ReporterSelector = (props: IProps) => {
-  const [date, setDate] = useState(InitialValue.date);
-  const [name, setName] = useState(InitialValue.report);
+export const ReporterSelector = (props: IProps) => {  
   const [show, setShow] = useState(false);
   const dataArray = [
     { title: "First Element", content: " " },
   ];
-  const onDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShow(false)
-    setDate(currentDate);
-  };
 
-  const render_highway_header = (item, expanded) => {
+  const render_header = (handleSubmit, form, submitting, pristine, values, expanded: boolean) => {
     return (
       <View
         style={{
@@ -39,8 +32,8 @@ export const ReporterSelector = (props: IProps) => {
           alignItems: "center",
         }}>
         <Text style={{ fontWeight: "600" }}>
-          {`${date.getFullYear()}年${date.getMonth() + 1
-            }月${date.getDate()}日-${name}`}
+          {`${values.date.getFullYear()}年${values.date.getMonth() + 1
+            }月${values.date.getDate()}日-${values.report}`}
         </Text>
         {expanded ? (
           <Icon
@@ -58,68 +51,102 @@ export const ReporterSelector = (props: IProps) => {
     );
   };
 
-  const render_highway_content = () => {
+  const render_content = (handleSubmit, form, submitting, pristine, values) => {
     return (
       <View>
-        <Item picker>
-          <Picker
-            mode="dropdown"
-            selectedValue={name}
-            onValueChange={
-              (value, position) => {
-                setName(value)
-              }
-            }
-            iosIcon={<Icon name="ios-arrow-down" />}
-            style={{ width: "90%" }}
-            placeholder="选择"
-            placeholderStyle={{ color: "#bfc6ea" }}
-            placeholderIconColor="#007aff">
-            {
-              report_data.map(
-                (item, index) => {
-                  return <Picker.Item key={index} label={item} value={item} />
-                }
-              )
-            }
-          </Picker>
-        </Item>
-        <Item>
-          <Button transparent={true} onPress={() => setShow(true)}  >
-            <Text>{`${date.getFullYear()}年${date.getMonth() + 1
-              }月${date.getDate()}日`}</Text>
-          </Button>
-          {show && (
-            <DateTimePicker
-              testID="dateTimePicker"
-              value={date}
-              mode='date'
-              is24Hour={true}
-              display="default"
-              onChange={onDateChange}
-            />
-          )}
+        <Field
+          name="report"
+          render={
+            props => (
+              <Item picker>
+                <Picker
+                  mode="dropdown"
+                  selectedValue={props.input.value}
+                  onValueChange={
+                    (value, position) => {
+                      props.input.onChange(value)
+                    }
+                  }
+                  iosIcon={<Icon name="ios-arrow-down" />}
+                  style={{ width: "90%" }}
+                  placeholder="选择"
+                  placeholderStyle={{ color: "#bfc6ea" }}
+                  placeholderIconColor="#007aff">
+                  {
+                    report_data.map(
+                      (item, index) => {
+                        return <Picker.Item key={index} label={item} value={item} />
+                      }
+                    )
+                  }
+                </Picker>
+              </Item>
+            )
+          }
+        >
+        </Field>
 
-        </Item>
-
+        <Field
+          name="date"
+          render={
+            props => (
+              <Item>               
+                <Button transparent={true} onPress={() => setShow(true)}  >
+                  <Text>{`${values.date.getFullYear()}年${values.date.getMonth() + 1
+                    }月${values.date.getDate()}日`}</Text>
+                </Button>
+                {show && (
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={props.input.value}
+                    mode='date'
+                    is24Hour={true}
+                    display="default"
+                    onChange={
+                      (value, position) => {
+                        setShow(false)
+                        props.input.onChange(position)
+                      }
+                    }
+                  />
+                )}
+              </Item>
+            )
+          }
+        >
+        </Field>
+        <FormSpy
+          subscription={{ values: true, valid: true }}
+          onChange={(state) => {
+            const { values, valid } = state             
+            props.getData(values)
+          }} />
       </View>
     )
 
   };
 
   return (
-    <Accordion
-     style={{marginBottom: 5}}
-      dataArray={dataArray}
-      expanded={[]}
-      renderHeader={
-        render_highway_header
-      }
-      renderContent={
-
-        render_highway_content
+    <Form
+      initialValues={InitialValue}
+      onSubmit={() => { }}
+      render={
+        ({ handleSubmit, form, submitting, pristine, values }) => (
+          <Accordion
+            
+            dataArray={dataArray}
+            expanded={[]}
+            renderHeader={
+              (item, expanded: boolean) =>
+                render_header(handleSubmit, form, submitting, pristine, values, expanded)
+            }
+            renderContent={
+              () =>
+                render_content(handleSubmit, form, submitting, pristine, values)
+            }
+          />
+        )
       }
     />
-
   )
 }

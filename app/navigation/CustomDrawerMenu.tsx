@@ -37,7 +37,7 @@ export function CustomDrawerMenu(props) {
         </TouchableOpacity>
         <TouchableOpacity
           style={{marginTop: 20}}
-          onPress={() => navigationService.goBlankPage()}>
+          onPress={() => navigationService.goSample()}>
           <Text>验收反馈</Text>
         </TouchableOpacity>
         <TouchableOpacity
