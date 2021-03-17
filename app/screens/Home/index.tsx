@@ -3,11 +3,12 @@ import { View } from 'react-native';
 import { Button } from 'react-native-paper';
 
 import { useDispatch } from 'react-redux';
-import * as loginActions from 'app/store/actions/loginActions';
+import { logOut } from '../../features/login/actions';
+
 import styles from './styles';
 const Home: React.FC = () => {
   const dispatch = useDispatch();
-  const onLogout = () => dispatch(loginActions.logOut());
+  const onLogout = () => dispatch(logOut());
 
   return (
     <View style={styles.container}>

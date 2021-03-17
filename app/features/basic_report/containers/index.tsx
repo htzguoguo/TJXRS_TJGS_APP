@@ -50,9 +50,19 @@ import {
 import { HighwaySelector } from "../components/Highway";
 import { ReporterSelector } from "../components/ReportDate";
 import { StationForm } from "../components/StationForm";
+import { DiseaseForm } from "../components/DiseaseForm_b";
+import { useDispatch } from "react-redux";
+import { requestCreateBasicReport } from '../actions';
 function BasicReport(props: IProps) {
   const windowWidth = Dimensions.get("window").width / 4;
-
+  const [selectedDiease, setSelectedDiease] = useState({});
+  const [selectedReportDate, setSelectedReportDate] = useState({});
+  const [selectedHighway, setSelectedHighway] = useState({});
+  const [selectedStation, setSelectedStation] = useState({});
+  const dispatch = useDispatch();
+  const onPostBasicReport = () => {
+    dispatch(requestCreateBasicReport({...selectedDiease, ...selectedHighway, ...selectedReportDate, ...selectedStation}))
+  };
   const [selectedCategory, setSelectedCategory] = useState<IScrollPickerState>({
     index: 0,
     item: mock_category[0],
@@ -72,14 +82,24 @@ function BasicReport(props: IProps) {
   });
 
   const getHighwayData = useCallback((item) => {
-    console.log('You clicked ', item);
+    console.log('You clicked ', item);   
+    setSelectedHighway(item);
+  }, []);
+
+  const getReportDateData = useCallback((item) => {
+    console.log('You clicked ', item);  
+    setSelectedReportDate(item);
+  }, []);
+  
+  const getDieaseData = useCallback((item) => {
+    console.log('You clicked ', item);     
+    setSelectedDiease(item);
   }, []);
 
   const getStationData = useCallback((item) => {
-    console.log('You clicked ', item);
+    console.log('You clicked ', item);     
+    setSelectedStation(item);
   }, []);
-
-
 
   const render_basic_info_item = (item: IReportBasicInfo) => {
     return (
@@ -118,55 +138,56 @@ function BasicReport(props: IProps) {
     );
   };
 
-  const render_road_defect_item = (item: IRoadDefect) => {
-    return (
-      <CardItem bordered>
-        <Body>
-          <View
-            style={{
-              flexDirection: "row",
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
-            <View style={{ flex: 1, justifyContent: "center" }}>
-              <Text style={{ textAlign: "center", fontSize: 8 }}>
-                {item.position}
-              </Text>
-            </View>
-            <View style={{ flex: 1, justifyContent: "center" }}>
-              <Text style={{ textAlign: "center", fontSize: 8 }}>
-                {item.name}
-              </Text>
-            </View>
-            <View style={{ flex: 1, justifyContent: "center" }}>
-              <Text style={{ textAlign: "center", fontSize: 8 }}>
-                {item.desc}
-              </Text>
-            </View>
-          </View>
-        </Body>
-      </CardItem>
-    );
-  };
-  const dataArray = [
-    { title: "First Element", content: " " },
-  ];
+  // const render_road_defect_item = (item: IRoadDefect) => {
+  //   return (
+  //     <CardItem bordered>
+  //       <Body>
+  //         <View
+  //           style={{
+  //             flexDirection: "row",
+  //             flex: 1,
+  //             justifyContent: "center",
+  //             alignItems: "center",
+  //           }}>
+  //           <View style={{ flex: 1, justifyContent: "center" }}>
+  //             <Text style={{ textAlign: "center", fontSize: 8 }}>
+  //               {item.position}
+  //             </Text>
+  //           </View>
+  //           <View style={{ flex: 1, justifyContent: "center" }}>
+  //             <Text style={{ textAlign: "center", fontSize: 8 }}>
+  //               {item.name}
+  //             </Text>
+  //           </View>
+  //           <View style={{ flex: 1, justifyContent: "center" }}>
+  //             <Text style={{ textAlign: "center", fontSize: 8 }}>
+  //               {item.desc}
+  //             </Text>
+  //           </View>
+  //         </View>
+  //       </Body>
+  //     </CardItem>
+  //   );
+  // };
+
+  const saveReport = () => (
+    <Button transparent onPress={
+      onPostBasicReport
+    }>
+      <Text>保存</Text>
+    </Button>
+  )
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Container>
-        <StandardHeader isHome={true} body="巡查上报" />
+        <StandardHeader isHome={true} body="巡查上报" right={saveReport} />
         <Content  >
-          {
-            ReporterSelector({ getData: getHighwayData })
-          }
-          {
-            HighwaySelector({ getData: getHighwayData })
-          }
-          {
-            StationForm({ getData: getHighwayData })
-          }
-          
+          <ReporterSelector getData={getReportDateData}/>
+          <HighwaySelector getData={getHighwayData}/>
+          <StationForm getData={getStationData}/>
+         
+
           <Card style={styles.record_item}>
             <CardItem header bordered>
               <Text>现场照片</Text>
@@ -217,8 +238,9 @@ function BasicReport(props: IProps) {
               </Right>
             </CardItem>
           </Card>
-        
-          <Card style={styles.record_item}>
+
+          <DiseaseForm getData={getDieaseData} />
+          {/* <Card style={styles.record_item}>
             <CardItem header bordered>
               <Text>病害信息</Text>
             </CardItem>
@@ -303,9 +325,7 @@ function BasicReport(props: IProps) {
                 </View>
               </Body>
             </CardItem>
-          </Card>
-          <Card style={styles.record_item}>
-            <CardItem header bordered>
+             <CardItem header bordered>
               <Text>预估工程量</Text>
             </CardItem>
             <CardItem bordered>
@@ -330,7 +350,8 @@ function BasicReport(props: IProps) {
               </Body>
             </CardItem>
             {mock_road_defects.map((item) => render_road_defect_item(item))}
-          </Card>
+          </Card> */}
+
           <Card style={styles.record_item}>
             <CardItem header bordered>
               <Text>病害基本信息</Text>

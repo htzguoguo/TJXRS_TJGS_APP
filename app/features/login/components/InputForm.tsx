@@ -7,7 +7,7 @@ import { IFormValues } from "../containers";
 import { StyleSheet } from "react-native";
 interface IProps {
   onLogin: (values: IFormValues,) => void,
-  isLoginLoading: boolean
+  isLoading: boolean
 }
 let focusOnError = createDecorator()
 export const InputForm = (props: IProps) => (
@@ -68,7 +68,7 @@ export const InputForm = (props: IProps) => (
         </Field>
         <View padder>
           {
-            props.isLoginLoading ? <Spinner /> :
+            props.isLoading ? <Spinner /> :
               <Button block onPress={handleSubmit}>
                 <Text>登录</Text>
               </Button>
@@ -97,7 +97,7 @@ export const InputForm = (props: IProps) => (
 )
 
 const styles = StyleSheet.create({
-  
+
   forgotPasswordContainer: {
     flex: 1,
     flexDirection: 'row',
@@ -105,5 +105,5 @@ const styles = StyleSheet.create({
   },
   forgotPasswordButton: {
     paddingHorizontal: 0,
-  }, 
+  },
 });

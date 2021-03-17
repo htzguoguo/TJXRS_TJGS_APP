@@ -27,9 +27,6 @@ export const loginReducer = createReducer(initialState, {
       password: action.password,
     };
   },
-  [types.LOGIN_DISABLE_LOADER](state: ILoginState) {
-    return { ...state };
-  },
   [types.LOGIN_RESPONSE](state: ILoginState, action: ILoginResponseState) { 
     const user = action.response  
     saveAuth(user.token_type, user.access_token, user.user.name);

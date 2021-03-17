@@ -135,7 +135,7 @@ export const ReporterSelector = (props: IProps) => {
           <Accordion
             
             dataArray={dataArray}
-            expanded={[]}
+            expanded={[0]}
             renderHeader={
               (item, expanded: boolean) =>
                 render_header(handleSubmit, form, submitting, pristine, values, expanded)

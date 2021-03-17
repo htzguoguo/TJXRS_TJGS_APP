@@ -30,8 +30,8 @@ function setAjax(authString: string | null) {
   axios.defaults.headers.Authorization = authString;
 }
 
-function getAuthString() {  
-  return AsyncStorage.getItem("token");
+async function  getAuthString() {  
+  return await AsyncStorage.getItem("token");
 }
 
 export {saveAuth, dropAuth, getAuthString};

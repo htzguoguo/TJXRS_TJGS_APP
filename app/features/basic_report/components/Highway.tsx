@@ -33,6 +33,7 @@ export const HighwaySelector = (props: IProps) => {
           justifyContent: "space-between",
           alignItems: "center",
         }}>
+
         <Text style={{ fontWeight: "600" }}>
           {`${values.weather}，${values.name.substring(0, 6)},${values.direction},${values.lane}`}
         </Text>
@@ -43,11 +44,11 @@ export const HighwaySelector = (props: IProps) => {
             style={{ color: "green", fontSize: 32 }}
           />
         ) : (
-            <Icon
-              name="arrow-forward-circle-outline"
-              style={{ color: "#27a", fontSize: 32 }}
-            />
-          )}
+          <Icon
+            name="arrow-forward-circle-outline"
+            style={{ color: "#27a", fontSize: 32 }}
+          />
+        )}
       </View>
     );
   };
@@ -208,7 +209,7 @@ export const HighwaySelector = (props: IProps) => {
                   to={-1}
                 /> */}
         <FormSpy
-          subscription={{ values: true, valid: true }}
+          subscription={{ values: true, valid: true, initialValues: true }}
           onChange={(state) => {
             const { values, valid } = state
             // setHighwayIndex(Highway_Data.indexOf(values.name))
@@ -228,9 +229,8 @@ export const HighwaySelector = (props: IProps) => {
       render={
         ({ handleSubmit, form, submitting, pristine, values }) => (
           <Accordion
-         
             dataArray={dataArray}
-            expanded={[]}
+            expanded={[0]}
             renderHeader={
               (item, expanded: boolean) =>
                 render_highway_header(handleSubmit, form, submitting, pristine, values, expanded)
@@ -239,7 +239,9 @@ export const HighwaySelector = (props: IProps) => {
               () =>
                 render_highway_content(handleSubmit, form, submitting, pristine, values)
             }
-          />
+          >
+
+          </Accordion>
         )
       }
     />

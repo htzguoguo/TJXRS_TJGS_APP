@@ -33,6 +33,7 @@
     "react-native-dynamically-selected-picker": "^2.0.1",
     "react-native-gesture-handler": "^1.7.0",
     "react-native-linear-gradient": "^2.5.6",
+    "react-native-modal": "^11.7.0",
     "react-native-paper": "^4.1.0",
     "react-native-reanimated": "^1.13.0",
     "react-native-safe-area-context": "^3.1.7",
@@ -43,7 +44,8 @@
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
-    "redux-saga": "^1.1.3"
+    "redux-saga": "^1.1.3",
+    "reselect": "^4.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",

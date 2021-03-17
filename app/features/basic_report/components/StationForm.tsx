@@ -38,11 +38,11 @@ export const StationForm = (props: IProps) => {
             style={{ color: "green", fontSize: 32 }}
           />
         ) : (
-            <Icon
-              name="arrow-forward-circle-outline"
-              style={{ color: "#27a", fontSize: 32 }}
-            />
-          )}
+          <Icon
+            name="arrow-forward-circle-outline"
+            style={{ color: "#27a", fontSize: 32 }}
+          />
+        )}
       </View>
     );
   };
@@ -123,11 +123,11 @@ export const StationForm = (props: IProps) => {
           </Field>
         </View>
         <FormSpy
-          subscription={{ values: true, valid: true }}
-          onChange={(state) => {
-            const { values, valid } = state             
-            props.getData(values)
-          }} />
+              subscription={{ values: true, valid: true }}
+              onChange={(state) => {
+                const { values, valid } = state
+                props.getData(values)
+              }} />
       </View>
     )
   }
@@ -140,9 +140,8 @@ export const StationForm = (props: IProps) => {
       render={
         ({ handleSubmit, form, submitting, pristine, values }) => (
           <Accordion
-           
             dataArray={dataArray}
-            expanded={[]}
+            expanded={[0]}
             renderHeader={
               (item, expanded: boolean) =>
                 render_header(handleSubmit, form, submitting, pristine, values, expanded)
@@ -151,7 +150,9 @@ export const StationForm = (props: IProps) => {
               () =>
                 render_content(handleSubmit, form, submitting, pristine, values)
             }
-          />
+          >
+           
+          </Accordion>
         )
       }
     >

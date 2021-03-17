@@ -52,7 +52,7 @@ export function StandardHeader(props: IProps) {
           {
             right && (
               isString(right) ? <Title>{right}</Title> :
-              <right/>
+               right()
             ) 
           }
        

@@ -5,9 +5,11 @@
  */
 import { all } from 'redux-saga/effects';
 import { loginSagas } from '../features/login/sagas';
+import { settingsSagas } from '../features/setting/sagas';
+import { basicReportSagas } from '../features/basic_report/sagas';
 
 // export default [loginSaga];
 
 export default function* rootSaga() {
-  yield all([...loginSagas]);
+  yield all([...loginSagas, ...settingsSagas, ...basicReportSagas]);
 }

@@ -4,4 +4,4 @@
 
 
 ## Error type 3. Activity class {com.awesome_project/ com.awesome_project.MainActivity} does not exist in react native (Android device)
-adb uninstall com.appname
+adb uninstall com.rnboilerplate

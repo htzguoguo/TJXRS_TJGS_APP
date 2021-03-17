@@ -1,8 +1,8 @@
 import { AxiosResponse } from "axios";
 import { IServerResponseFailure } from "../../../api/types";
-import { ILoginResponse } from "../models";
+import { ILoginSuccessResponse } from "../models";
 
 export interface ILoginSagaCallResponse {
-  response: AxiosResponse<ILoginResponse>,
+  response: AxiosResponse<ILoginSuccessResponse>,
   error: AxiosResponse<IServerResponseFailure>
 }

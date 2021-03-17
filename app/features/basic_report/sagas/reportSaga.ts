@@ -8,25 +8,30 @@ import {AxiosResponse} from "axios";
 import { put, call, select } from 'redux-saga/effects';
 
 import { Alert } from 'react-native';
-import {loginUser} from '../service';
-import * as loginActions from '../actions';
+import {createBasicReport} from '../service';
+import * as reportActions from '../actions';
 import * as loaderActions from '../../../store/actions/loaderActions';
-import { ILoginSagaCallResponse } from "./types";
-
-// Our worker Saga that logins the user
-export default function* loginAsync(action) {
+  
+export default function* createBasicReportAsync(action) {
   yield put(loaderActions.enableLoader());
   //how to call api
-  const result: ILoginSagaCallResponse = yield call(loginUser, action.username, action.password);
-    console.log('login result', result);
-  if (result.response && result.response.status === 200) {
-    yield put(loginActions.onLoginResponse(result.response.data));
+
+  console.log('createBasicReportAsync action.entity', action.entity);
+  const result  = yield call(createBasicReport, action.entity);
+     
+     console.log('createBasicReportAsync result', result);
+  if (result.response && result.response.status === 201) {
+    yield put(reportActions.onCreateBasicReportResponse(result.response.data));
     yield put(loaderActions.disableLoader());
 
+ Alert.alert('提示：', '上报成功', [{
+      text: '关闭',      
+      style: 'cancel'
+    },]);
     // no need to call navigate as this is handled by redux store with SwitchNavigator
     //yield call(navigationActions.navigateToHome);
   } else {
-    yield put(loginActions.loginFailed(result.error.data.error));
+    yield put(reportActions.createBasicReportFailed(result.error.data.error));
     yield put(loaderActions.disableLoader());
     // Toast.show({
     //   text: result.error.data.error,

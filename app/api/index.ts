@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Alert } from 'react-native';
 import { getAuthString } from '../utils/authUtils';
 import ApiConstants from './ApiConstants';
 const apiClient = axios.create({
@@ -6,11 +7,13 @@ const apiClient = axios.create({
 });
 
 // Set the auth token for any request
-apiClient.interceptors.request.use((config) => {
+apiClient.interceptors.request.use( async (config) => {
+  console.log('before set', config);
   if (!config.headers.Authorization) {
-    const accessToken = getAuthString();
+    const accessToken = await getAuthString();
     config.headers.Authorization = accessToken;
   }
+  console.log(config);
   return config;
 });
 
@@ -29,6 +32,13 @@ apiClient.interceptors.response.use(
           context: {},
         },
       };
+    }else {
+      if (401 === error.response.status) {
+        Alert.alert('提示：', '认证已过期，请重新登录。', [{
+          text: '关闭',      
+          style: 'cancel'
+        },]);
+      }
     }
     return Promise.reject(error.response);
   },
