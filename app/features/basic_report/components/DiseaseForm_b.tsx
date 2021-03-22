@@ -272,9 +272,9 @@ export const DiseaseForm = (props: IProps) => {
 
           return (
             <View style={styles.record_item}>
-              {/* <CardItem header bordered>
+              <CardItem header bordered>
                 <Text>病害信息</Text>
-              </CardItem> */}
+              </CardItem>
               <CardItem bordered>
                 <Body>
                   <View
@@ -444,9 +444,9 @@ export const DiseaseForm = (props: IProps) => {
                   </View>
                 </Body>
               </CardItem>
-              {/* <CardItem header bordered>
+              <CardItem header bordered>
                 <Text>预估工程量</Text>
-              </CardItem> */}
+              </CardItem>
               <CardItem bordered>
                 <Body>
                   <View

@@ -142,6 +142,7 @@ export const StationForm = (props: IProps) => {
       render={
         ({ handleSubmit, form, submitting, pristine, values }) => (
           <Accordion
+          style={{marginTop: 5}}
             dataArray={dataArray}
             expanded={[0]}
             renderHeader={

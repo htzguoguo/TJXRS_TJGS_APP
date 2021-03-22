@@ -58,10 +58,10 @@ export default function Login() {
               服务单位:天津市交通科学研究院{' '}
             </Text>
           </View>
-          <Image
+          {/* <Image
             source={imagesConfig.login.footer}
             style={{ width: 42, height: 42 }}
-          />
+          /> */}
         </View>
       </Footer>
 

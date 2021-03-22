@@ -19,12 +19,19 @@ in this file
 
 
 
-## Build and Install unsigned apk on device without the development server
+## Build Debug and Install unsigned apk on device without the development server
 
 npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/
 
 cd android
 #Create debug build:
 ./gradlew assembleDebug
-#Create release build:
-./gradlew assembleRelease
+
+## Build Debug and Install unsigned apk on device without the development server
+
+npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/build/intermediates/res/merged/release/ 
+rm -rf android/app/src/main/res/drawable-* 
+rm -rf android/app/src/main/res/raw/* 
+cd android 
+./gradlew assembleRelease 
+cd ..

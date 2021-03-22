@@ -74,7 +74,7 @@ const RootNavigation: React.FC = () => {
 const Entrypoint: React.FC = () => {
   return (
     <Provider store={store}>
-      <PersistGate loading={<ActivityIndicator />} persistor={persistor}>
+      <PersistGate loading={<ActivityIndicator />} persistor={persistor}>        
         <RootNavigation />
       </PersistGate>
     </Provider>

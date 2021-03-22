@@ -14,8 +14,8 @@ import {
   DatePicker,
   Text,
   Title,
-} from "native-base"; 
-import { Picker } from '@react-native-picker/picker'; 
+} from "native-base";
+import { Picker } from '@react-native-picker/picker';
 import { IProps } from "./types";
 import { isString } from "lodash";
 
@@ -24,8 +24,8 @@ export function StandardHeader(props: IProps) {
   const { isHome, body, right } = props;
   return (
     // <Header style={{backgroundColor: '#008A96'}} androidStatusBarColor="#008A96">
-      <Header  >
-      <Left style={{ flex: 1,  justifyContent: 'flex-start'  }}>
+    <Header  >
+      <Left style={{ flex: 1, justifyContent: 'flex-start' }}>
         {isHome ? (
           <Button
             transparent
@@ -33,30 +33,30 @@ export function StandardHeader(props: IProps) {
             <Icon active name="menu" />
           </Button>
         ) : (
-            <Button transparent onPress={() => navigation.goBack()}>
-              <Icon name="ios-arrow-back" />
-            </Button>
-          )}
+          <Button transparent onPress={() => navigation.goBack()}>
+            <Icon name="ios-arrow-back" />
+          </Button>
+        )}
       </Left>
-      <Body style={{ flex: 1,  justifyContent: 'center', alignItems: 'center' }}>
-       
-          {
-            body && (
-              isString(body) ? <Title>{body}</Title> :
-              <body/>
-            ) 
-          }
-      
+      <Body style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+
+        {
+          body && (
+            isString(body) ? <Title>{body}</Title> :
+              body()
+          )
+        }
+
       </Body>
-      <Right style={{ flex: 1,  justifyContent: 'flex-end'  }}>
-        
-          {
-            right && (
-              isString(right) ? <Title>{right}</Title> :
-               right()
-            ) 
-          }
-       
+      <Right style={{ flex: 1, justifyContent: 'flex-end' }}>
+
+        {
+          right && (
+            isString(right) ? <Title>{right}</Title> :
+              right()
+          )
+        }
+
       </Right>
     </Header>
   );

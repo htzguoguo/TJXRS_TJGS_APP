@@ -34,7 +34,7 @@ export const HighwaySelector = (props: IProps) => {
           alignItems: "center",
         }}>
 
-        <Text style={{ fontWeight: "600" }}>
+        <Text  style={{ fontWeight: "600" }}>
           {`${values.weather}，${values.name.substring(0, 6)},${values.direction},${values.lane}`}
         </Text>
         {expanded ? (
@@ -229,6 +229,7 @@ export const HighwaySelector = (props: IProps) => {
       render={
         ({ handleSubmit, form, submitting, pristine, values }) => (
           <Accordion
+            style={{marginTop: 5}}
             dataArray={dataArray}
             expanded={[0]}
             renderHeader={

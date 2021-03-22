@@ -12,11 +12,11 @@ import {
   TouchableOpacity,
 } from "react-native";
 import DynamicallySelectedPicker from "react-native-dynamically-selected-picker";
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { launchCamera, launchImageLibrary, MediaType } from 'react-native-image-picker';
 import {
   Container,
   Content,
-  Form,
   Item,
   Grid,
   Row,
@@ -32,6 +32,8 @@ import {
   Left,
   Right,
   Body,
+  Picker,
+  Header,
 } from "native-base";
 import styles from "./styles";
 import {
@@ -50,14 +52,17 @@ import { IStoreState } from "../../../store/types";
 import { tempFilesSelector, tempImagesSelector } from "../selectors";
 import GallerySwiper, { ImageObj } from "react-native-gallery-swiper";
 import ApiConstants from "../../../api/ApiConstants";
+import { Field, FormSpy, Form } from "react-final-form";
+import { report_data } from "../components/reports_data";
 
 
 function BasicReport(props: IProps) {
   const windowWidth = Dimensions.get("window").width / 4;
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const tempSelectedImages = useSelector((tempImagesSelector));
-  const tempSelectedFiles = useSelector((tempFilesSelector)); 
+  const tempSelectedFiles = useSelector((tempFilesSelector));
   const [selectedDiease, setSelectedDiease] = useState({});
-  const [selectedReportDate, setSelectedReportDate] = useState({});
+  const [selectedReportDate, setSelectedReportDate] = useState({ report: report_data[0], date: new Date() });
   const [selectedHighway, setSelectedHighway] = useState({});
   const [selectedStation, setSelectedStation] = useState({});
   const dispatch = useDispatch();
@@ -96,6 +101,86 @@ function BasicReport(props: IProps) {
     }>
       <Text>保存</Text>
     </Button>
+  )
+
+  const headerBody = () => (
+    <Form
+      initialValues={selectedReportDate}
+      onSubmit={() => { }}
+      render={
+        ({ handleSubmit, form, submitting, pristine, values }) => (
+          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+            <Field
+              name="report"
+              render={
+                props => (
+
+                  <Picker
+                    mode="dropdown"
+                    selectedValue={props.input.value}
+                    onValueChange={
+                      (value, position) => {
+                        props.input.onChange(value)
+                      }
+                    }
+                    iosIcon={<Icon name="ios-arrow-down" />}
+                    style={{ width: "90%" }}
+                    placeholder="选择"
+                    placeholderStyle={{ color: "#bfc6ea" }}
+                    placeholderIconColor="#007aff">
+                    {
+                      report_data.map(
+                        (item, index) => {
+                          return <Picker.Item key={index} label={item} value={item} />
+                        }
+                      )
+                    }
+                  </Picker>
+
+                )
+              }
+            >
+            </Field>
+
+            <Field
+              name="date"
+              render={
+                props => (
+                  <View style={{ justifyContent: 'flex-start', alignItems: 'baseline' }}>
+                    <Button warning transparent={true} onPress={() => setShowDatePicker(true)}  >
+                      <Text>{`${values.date.getFullYear()}${values.date.getMonth() + 1
+                        }${values.date.getDate()}`}</Text>
+                    </Button>
+                    {showDatePicker && (
+                      <DateTimePicker
+                        testID="dateTimePicker"
+                        value={props.input.value}
+                        mode='date'
+                        is24Hour={true}
+                        display="default"
+                        onChange={
+                          (value, position) => {
+                            setShowDatePicker(false)
+                            props.input.onChange(position)
+                          }
+                        }
+                      />
+                    )}
+                  </View>
+                )
+              }
+            >
+            </Field>
+            <FormSpy
+              subscription={{ values: true, valid: true }}
+              onChange={(state) => {
+                const { values, valid } = state
+                setSelectedReportDate(values)
+              }} />
+          </View>
+        )
+      }
+    />
   )
 
   const Image_Options = {
@@ -156,77 +241,89 @@ function BasicReport(props: IProps) {
     });
   }
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity>
-      <Image
-        source={{ uri: `${ApiConstants.FILE_BASE_URL}${item.savedName}` }}
-        style={styles.maintain_image}></Image>
-    </TouchableOpacity>
-  )
-
+  const getReportSummary = () => {
+    const roadName = `${selectedHighway.weather},${selectedHighway.name},${selectedHighway.direction},${selectedHighway.lane}`;
+    const station = `K${selectedStation.kilometer}+${selectedStation.meter}`;
+    let defect = '';
+    if(selectedDiease && selectedDiease.defect && selectedDiease.defect.length > 0) {
+      defect = `${selectedDiease.defect[0].dealwithdesc},${selectedDiease.defect[0].amount},${selectedDiease.defect[0].unit}`
+    }
+    return `${roadName},${station},${defect}`;
+  }
+ 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Container>
-        <StandardHeader isHome={true} body="巡查上报" right={saveReport} />
-        <Content  style={{padding: 1}}>
-          <Text>AAACCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC</Text>
-
-          <ReporterSelector getData={getReportDateData} />
+        <StandardHeader isHome={true} body={headerBody} right={saveReport} />
+        <Header  >
+          <Button transparent >
+            <Text>{getReportSummary()}</Text>
+          </Button>
+        </Header>
+        <Content style={{ padding: 1 }}>
+          {/* <ReporterSelector getData={getReportDateData} /> */}
+          {/* <View style={[styles.record_item, { marginBottom: 5, backgroundColor: 'gray' }]}>
+            <CardItem header>
+             
+            </CardItem>
+          </View> */}
           <HighwaySelector getData={getHighwayData} />
           <StationForm getData={getStationData} />
-
-          <View style={ styles.record_item}>
-            {/* <CardItem header bordered>
+          <View style={styles.record_item}>
+            <CardItem header bordered>
               <Text>现场照片</Text>
-            </CardItem> */}
+            </CardItem>
             <CardItem >
               <Body>
                 {
-                  tempSelectedImages && tempSelectedImages.length > 0 ?
-                    <FlatList
-                      horizontal={true}
-                      data={tempSelectedImages}
-                      renderItem={
-                        ({ item }) => (
-                          <TouchableOpacity
-                            onPress={
-                              () => {
-                                Alert.alert(
-                                  "提示",
-                                  "是否删除当前文件",
-                                  [
-                                    {
-                                      text: "取消",
-                                      style: "cancel"
-                                    },
-                                    { text: "确定", onPress: () => onDeleteUploadFile(item) }
-                                  ]
-                                );
+                  tempSelectedImages && tempSelectedImages.length > 0 &&
+                  <FlatList
+                    horizontal={true}
+                    data={tempSelectedImages}
+                    renderItem={
+                      ({ item }) => (
+                        <TouchableOpacity
+                          onPress={
+                            () => {
+                              Alert.alert(
+                                "提示",
+                                "是否删除当前文件",
+                                [
+                                  {
+                                    text: "取消",
+                                    style: "cancel"
+                                  },
+                                  { text: "确定", onPress: () => onDeleteUploadFile(item) }
+                                ]
+                              );
 
-                              }
                             }
-                          >
-                            <View style={styles.maintain_image_item}>
-                              <Image
-                                source={{ uri: `data:${item.type};base64,${item.base64}` }}
-                                style={styles.maintain_image}></Image>
-                            </View>
-                          </TouchableOpacity>
-                        )
-                      }
-                      keyExtractor={item => item.savedName}
-                    /> :
-                    <TouchableOpacity
-                      onPress={
-                        takeImage
-                      }
-                    >
-                      <View style={styles.maintain_image_item}>
-                        <Image
-                          source={imagesConfig.report.add_image}
-                          style={styles.maintain_image}></Image>
-                      </View>
-                    </TouchableOpacity>
+                          }
+                        >
+                          <View style={styles.maintain_image_item}>
+                            <Image
+                              source={{ uri: `data:${item.type};base64,${item.base64}` }}
+                              style={styles.maintain_image}>
+
+                            </Image>
+                          </View>
+                        </TouchableOpacity>
+                      )
+                    }
+                    keyExtractor={item => item.savedName}
+                  />
+                  // :
+                  // <TouchableOpacity
+                  //   onPress={
+                  //     takeImage
+                  //   }
+                  // >
+                  //   <View style={styles.maintain_image_item}>
+                  //     <Image
+                  //       source={imagesConfig.report.add_image}
+                  //       style={styles.maintain_image}></Image>
+                  //   </View>
+                  // </TouchableOpacity>
                 }
 
               </Body>
@@ -234,9 +331,9 @@ function BasicReport(props: IProps) {
           </View>
 
           <View style={styles.record_item}>
-            {/* <CardItem header bordered>
+            <CardItem header bordered>
               <Text>最近录音</Text>
-            </CardItem> */}
+            </CardItem>
             <CardItem bordered>
               <Left>
                 <Icon active name="radio" style={{ color: "#DD5044" }} />

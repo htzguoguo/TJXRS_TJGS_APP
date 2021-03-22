@@ -23,6 +23,8 @@ import { ILoginState } from '../features/login/types';
 import Home from '../screens/Home';
 import ForgotPassword from '../screens/ForgotPassword';
 
+import  DefaultColor from '../theme/variables/commonColor';
+
 const Stack = createStackNavigator();
 const AuthStack = createStackNavigator();
 const LoggedInStack = createStackNavigator();
@@ -117,8 +119,13 @@ const App: React.FC<IProps> = (props: IProps) => {
 
   return (
     <NavigationContainer ref={navigationRef} theme={theme}>
-      <StatusBar barStyle={theme.dark ? 'light-content' : 'dark-content'} />
-
+      {/* <StatusBar barStyle={theme.dark ? 'light-content' : 'dark-content'} /> */}
+      <StatusBar
+        animated={true}
+        backgroundColor={'#3F51B5'}
+        barStyle={theme.dark ? 'light-content' : 'dark-content'}
+        
+        hidden={false} />
       <Stack.Navigator
         headerMode="none"
         screenOptions={{gestureEnabled: false}}>
