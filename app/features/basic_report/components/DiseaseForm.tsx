@@ -65,17 +65,17 @@ const getDefectArrayOrEmpty = (col: Object | null | undefined, key: string): IRo
     const arr = col[key];
     if (arr && arr.length > 0) {
       result = arr.map(item => {
-        const str: string[] = item.split(",");
+        //const str: string[] = item.split(",");
+        const obj = item;
         return {
-          dealwithdesc: str[0],
-          unit: str[1],
+          dealwithdesc: obj.DealWithDesc ? obj.DealWithDesc : '',
+          unit: obj.MonitoringUnit ? obj.MonitoringUnit : '',
           amount: 0,
           length: 0,
           width: 0,
           depth: 0,
-          standard: str[2],
-          associate: str[3],
-
+          standard: obj.RegistStandard ? obj.RegistStandard : '',
+          associate: obj.AssociateUsersID ? obj.AssociateUsersID : '',
         }
       });
     }
@@ -135,7 +135,7 @@ export const DiseaseForm = (props: IProps) => {
     );
   };
 
-  props.getData({ selectedCategory })
+  // props.getData({ selectedCategory })
   return (
 
     <Card style={styles.record_item}>

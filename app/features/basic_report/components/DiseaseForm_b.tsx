@@ -10,7 +10,7 @@ import { workloadSelector } from "../selectors";
 import { IRoadDefect, IScrollPickerItem, IScrollPickerState } from "../types";
 import { IWorkload } from "../../setting/models";
 import { composeValidators, isRequired, mustBeNumber } from "../../../components/validateRules";
- 
+
 
 interface IProps {
   getData: (values: {}) => void
@@ -71,10 +71,10 @@ const getDefectArrayOrEmpty = (col: Object | null | undefined, key: string): IRo
         return {
           dealwithdesc: obj.DealWithDesc ? obj.DealWithDesc : '',
           unit: obj.MonitoringUnit ? obj.MonitoringUnit : '',
-          amount: 0,
-          length: 0,
-          width: 0,
-          depth: 0,
+          amount: 1,
+          length: 1,
+          width: 1,
+          depth: 1,
           standard: obj.RegistStandard ? obj.RegistStandard : '',
           associate: obj.AssociateUsersID ? obj.AssociateUsersID : '',
         }
@@ -116,11 +116,7 @@ export const DiseaseForm = (props: IProps) => {
       <CardItem bordered button onPress={
         () => {
           setModalVisible(true);
-          setSelectedEditItem(item);
-          form.change('length', item.length)
-          form.change('width', item.width)
-          form.change('depth', item.depth)
-          form.change('amount', item.amount)
+          setSelectedEditItem(item);         
         }
       }>
         <Body>
@@ -132,17 +128,17 @@ export const DiseaseForm = (props: IProps) => {
               alignItems: "center",
             }}>
             <View style={{ flex: 1, justifyContent: "center" }}>
-              <Text style={{ textAlign: "center", fontSize: 8 }}>
+              <Text style={{ textAlign: "center", fontSize: 12 }}>
                 {item.dealwithdesc}
               </Text>
             </View>
             <View style={{ flex: 1, justifyContent: "center" }}>
-              <Text style={{ textAlign: "center", fontSize: 8 }}>
+              <Text style={{ textAlign: "center", fontSize: 12 }}>
                 {item.amount}
               </Text>
             </View>
             <View style={{ flex: 1, justifyContent: "center" }}>
-              <Text style={{ textAlign: "center", fontSize: 8 }}>
+              <Text style={{ textAlign: "center", fontSize: 12 }}>
                 {item.unit}
               </Text>
             </View>
@@ -166,7 +162,7 @@ export const DiseaseForm = (props: IProps) => {
             asso.length >= 1 && units.length >= 1 &&
             <Field
               name="length"
-              validate={composeValidators(isRequired, mustBeNumber)}
+              validate={composeValidators(mustBeNumber)}
               warn={composeValidators(mustBeNumber)}
             >
               {
@@ -174,8 +170,8 @@ export const DiseaseForm = (props: IProps) => {
                   <Item fixedLabel error={field.meta.error && field.meta.touched}>
                     <Label>{asso[0]}({units[0]})</Label>
                     <Input
-                      placeholder=""
-                      secureTextEntry={false}
+                    keyboardType = 'numeric'
+                      placeholder=""                     
                       {...field.input}
                     />
                     {field.meta.touched && field.meta.error && (
@@ -190,7 +186,7 @@ export const DiseaseForm = (props: IProps) => {
             asso.length >= 2 && units.length >= 2 &&
             <Field
               name="width"
-              validate={composeValidators(isRequired, mustBeNumber)}
+              validate={composeValidators(mustBeNumber)}
               warn={composeValidators(mustBeNumber)}
             >
               {
@@ -198,8 +194,8 @@ export const DiseaseForm = (props: IProps) => {
                   <Item fixedLabel error={field.meta.error && field.meta.touched}>
                     <Label>{asso[1]}({units[1]})</Label>
                     <Input
-                      placeholder=""
-                      secureTextEntry={false}
+                    keyboardType = 'numeric'
+                      placeholder=""                     
                       {...field.input}
                     />
                     {field.meta.touched && field.meta.error && (
@@ -214,7 +210,7 @@ export const DiseaseForm = (props: IProps) => {
             asso.length >= 3 && units.length >= 3 &&
             <Field
               name="depth"
-              validate={composeValidators(isRequired, mustBeNumber)}
+              validate={composeValidators(mustBeNumber)}
               warn={composeValidators(mustBeNumber)}
             >
               {
@@ -222,8 +218,8 @@ export const DiseaseForm = (props: IProps) => {
                   <Item fixedLabel error={field.meta.error && field.meta.touched}>
                     <Label>{asso[2]}({units[2]})</Label>
                     <Input
-                      placeholder=""
-                      secureTextEntry={false}
+                    keyboardType = 'numeric'
+                      placeholder=""   
                       {...field.input}
                     />
                     {field.meta.touched && field.meta.error && (
@@ -236,16 +232,16 @@ export const DiseaseForm = (props: IProps) => {
           }
           <Field
             name="amount"
-            validate={composeValidators(isRequired, mustBeNumber)}
+            validate={composeValidators(mustBeNumber)}
             warn={composeValidators(mustBeNumber)}
           >
             {
               field => (
                 <Item fixedLabel error={field.meta.error && field.meta.touched}>
-                  <Label>工程量{fetect.unit}</Label>
+                  <Label>工程量({fetect.unit})</Label>
                   <Input
-                    placeholder=""
-                    secureTextEntry={false}
+                    placeholder="" 
+                    keyboardType = 'numeric'                  
                     {...field.input}
                   />
                   {field.meta.touched && field.meta.error && (
@@ -275,10 +271,10 @@ export const DiseaseForm = (props: IProps) => {
         ({ handleSubmit, form, submitting, pristine, values }) => {
 
           return (
-            <Card style={styles.record_item}>
-              <CardItem header bordered>
+            <View style={styles.record_item}>
+              {/* <CardItem header bordered>
                 <Text>病害信息</Text>
-              </CardItem>
+              </CardItem> */}
               <CardItem bordered>
                 <Body>
                   <View
@@ -448,9 +444,9 @@ export const DiseaseForm = (props: IProps) => {
                   </View>
                 </Body>
               </CardItem>
-              <CardItem header bordered>
+              {/* <CardItem header bordered>
                 <Text>预估工程量</Text>
-              </CardItem>
+              </CardItem> */}
               <CardItem bordered>
                 <Body>
                   <View
@@ -487,6 +483,16 @@ export const DiseaseForm = (props: IProps) => {
                 isVisible={modalVisible}
                 coverScreen={false}
                 hasBackdrop={false}
+                onModalShow={
+                  () => {
+                    const item = selectedEditItem!;
+                    console.log('Modal onModalShow', item);
+                    form.change('length', item.length)
+                    form.change('width', item.width)
+                    form.change('depth', item.depth)
+                    form.change('amount', item.amount)
+                  }
+                }
               >
                 <View style={styles.content}>
                   {renderEditDefectContent(values)}
@@ -503,13 +509,13 @@ export const DiseaseForm = (props: IProps) => {
                         const idx = selectedDefect.findIndex(
                           item => item.dealwithdesc === selectedEditItem?.dealwithdesc && item.standard === selectedEditItem.standard
                         )
-                        if(idx > -1) {
+                        if (idx > -1) {
                           const found = selectedDefect[idx];
                           found.length = values.length;
                           found.width = values.width;
                           found.depth = values.depth;
-                          found.amount = values.amount;                           
-                          setSelectedDefect([...selectedDefect]); 
+                          found.amount = values.amount;
+                          setSelectedDefect([...selectedDefect]);
                         }
                         setModalVisible(!modalVisible)
                       }}  >
@@ -528,7 +534,7 @@ export const DiseaseForm = (props: IProps) => {
                   // setSelectedData({...values});
                   props.getData(values)
                 }} />
-            </Card>
+            </View>
           )
         }
       }
@@ -541,6 +547,18 @@ export const DiseaseForm = (props: IProps) => {
 const styles = StyleSheet.create({
   record_item: {
     marginTop: 5,
+    marginBottom: 5,    
+    flex: 0,
+    elevation: 1,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 0,
+    marginVertical: 1,
+    borderRadius: 1,
+    marginHorizontal: 1,
+    padding: 0,
+    borderWidth: 0,
   },
   modal: {
     justifyContent: 'center',

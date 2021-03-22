@@ -10,7 +10,7 @@ import sagas from './sagas';
 const config = {
   key: 'root',
   storage: AsyncStorage,
-  blacklist: ['loadingReducer'],
+  blacklist: ['loadingReducer', 'basicReportReducer', 'uploadFileReducer'],
   debug: true, //to get useful logging
 };
 

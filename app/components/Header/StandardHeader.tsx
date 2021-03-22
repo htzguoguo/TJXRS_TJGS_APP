@@ -23,7 +23,8 @@ export function StandardHeader(props: IProps) {
   const navigation = useNavigation();
   const { isHome, body, right } = props;
   return (
-    <Header>
+    // <Header style={{backgroundColor: '#008A96'}} androidStatusBarColor="#008A96">
+      <Header  >
       <Left style={{ flex: 1,  justifyContent: 'flex-start'  }}>
         {isHome ? (
           <Button

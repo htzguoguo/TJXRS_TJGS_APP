@@ -3,9 +3,10 @@ import { View, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
 import { Switch } from 'react-native-paper';
-
-import * as themeActions from 'app/store/actions/themeActions';
-import { IThemeState } from 'app/models/reducers/theme';
+import { IThemeState } from '../store/theme/model';
+import * as themeActions from '../store/theme/actions';
+ 
+ 
 
 interface IState {
   themeReducer: IThemeState;

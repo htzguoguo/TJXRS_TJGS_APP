@@ -1,10 +1,11 @@
-import createReducer from 'app/lib/createReducer';
+ 
 import * as types from './types';
 
 import { IDealWithDesc, ISettingState } from './types';
 import { IWorkload, IWorkloadQueryResponseState } from './models';
 import { dropAuth, saveAuth } from '../../utils/authUtils';
 import { parse } from '@babel/core';
+import createReducer from '../../lib/createReducer';
 
 // const initialState: ISettingState = {
 //   workloads: [],

@@ -10,7 +10,7 @@ import { put, call, select } from 'redux-saga/effects';
 import { Alert } from 'react-native';
 import {createBasicReport} from '../service';
 import * as reportActions from '../actions';
-import * as loaderActions from '../../../store/actions/loaderActions';
+import * as loaderActions from '../../../store/loader/actions';
   
 export default function* createBasicReportAsync(action) {
   yield put(loaderActions.enableLoader());

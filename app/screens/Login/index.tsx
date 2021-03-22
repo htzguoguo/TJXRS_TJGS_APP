@@ -4,16 +4,18 @@ import { Text, Button, } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 
 import styles from './styles';
-import { ILoginState } from 'app/models/reducers/login';
-import {navigationService} from 'app/navigation/NavigationService';
+
+ 
 import { requestLogin } from '../../features/login/actions';
+import { ILoginState } from '../../features/login/types';
+import { navigationService } from '../../navigation/NavigationService';
 
 interface IState {
   loginReducer: ILoginState;
 }
 
 const Login: React.FC = () => {
-  const id = useSelector((state: IState) => state.loginReducer.id);
+  const id = useSelector((state: IState) => state.loginReducer.user?.name);
   const dispatch = useDispatch();
   const onLogin = () => dispatch(requestLogin('test', '1234'));
   const onForgot = () => navigationService.navigate('ForgotPassword');

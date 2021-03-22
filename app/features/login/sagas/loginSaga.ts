@@ -10,7 +10,7 @@ import { put, call, select } from 'redux-saga/effects';
 import { Alert } from 'react-native';
 import {loginUser} from '../service';
 import * as loginActions from '../actions';
-import * as loaderActions from '../../../store/actions/loaderActions';
+import * as loaderActions from '../../../store/loader/actions';
 import { ILoginSagaCallResponse } from "./types";
 
 // Our worker Saga that logins the user

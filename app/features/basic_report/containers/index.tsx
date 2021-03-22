@@ -6,8 +6,13 @@ import {
   Image,
   TouchableWithoutFeedback,
   ScrollView,
+  StatusBar,
+  Alert,
+  FlatList,
+  TouchableOpacity,
 } from "react-native";
 import DynamicallySelectedPicker from "react-native-dynamically-selected-picker";
+import { launchCamera, launchImageLibrary, MediaType } from 'react-native-image-picker';
 import {
   Container,
   Content,
@@ -28,147 +33,62 @@ import {
   Right,
   Body,
 } from "native-base";
-import { Form as FinalForm } from "react-final-form";
-import { Picker } from '@react-native-picker/picker';
 import styles from "./styles";
 import {
   IProps,
-  IReportBasicInfo,
-  IScrollPickerState,
-  IRoadDefect,
 } from "../types";
 import { StandardHeader } from "../../../components/Header";
 import imagesConfig from "../../../config/images-config";
-import {
-  mock_reports,
-  mock_category,
-  mock_sub_option,
-  mock_Inspection,
-  mock_Damage,
-  mock_road_defects,
-} from "../mock_data";
 import { HighwaySelector } from "../components/Highway";
 import { ReporterSelector } from "../components/ReportDate";
 import { StationForm } from "../components/StationForm";
 import { DiseaseForm } from "../components/DiseaseForm_b";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { requestCreateBasicReport } from '../actions';
+import { deleteUploadFile, requestUploadFile } from "../../../store/file/actions";
+import { IStoreState } from "../../../store/types";
+import { tempFilesSelector, tempImagesSelector } from "../selectors";
+import GallerySwiper, { ImageObj } from "react-native-gallery-swiper";
+import ApiConstants from "../../../api/ApiConstants";
+
+
 function BasicReport(props: IProps) {
   const windowWidth = Dimensions.get("window").width / 4;
+  const tempSelectedImages = useSelector((tempImagesSelector));
+  const tempSelectedFiles = useSelector((tempFilesSelector)); 
   const [selectedDiease, setSelectedDiease] = useState({});
   const [selectedReportDate, setSelectedReportDate] = useState({});
   const [selectedHighway, setSelectedHighway] = useState({});
   const [selectedStation, setSelectedStation] = useState({});
   const dispatch = useDispatch();
   const onPostBasicReport = () => {
-    dispatch(requestCreateBasicReport({...selectedDiease, ...selectedHighway, ...selectedReportDate, ...selectedStation}))
+    const files = tempSelectedFiles.map(item => ({ ...item, base64: '' }))
+    dispatch(requestCreateBasicReport({ ...selectedDiease, ...selectedHighway, ...selectedReportDate, ...selectedStation, files }))
   };
-  const [selectedCategory, setSelectedCategory] = useState<IScrollPickerState>({
-    index: 0,
-    item: mock_category[0],
-  });
-  const [selectedSuboption, setSelectedSuboption] = useState<
-    number
-  >(0);
-  const [selectedInspection, setSelectedInspection] = useState<
-    IScrollPickerState
-  >({
-    index: 0,
-    item: mock_Inspection[0],
-  });
-  const [selectedDamage, setSelectedDamage] = useState<IScrollPickerState>({
-    index: 0,
-    item: mock_Damage[0],
-  });
+
+  const onDeleteUploadFile = (file) => {
+    dispatch(deleteUploadFile(file));
+  }
 
   const getHighwayData = useCallback((item) => {
-    console.log('You clicked ', item);   
+    console.log('You clicked ', item);
     setSelectedHighway(item);
   }, []);
 
   const getReportDateData = useCallback((item) => {
-    console.log('You clicked ', item);  
+    console.log('You clicked ', item);
     setSelectedReportDate(item);
   }, []);
-  
+
   const getDieaseData = useCallback((item) => {
-    console.log('You clicked ', item);     
+    console.log('You clicked ', item);
     setSelectedDiease(item);
   }, []);
 
   const getStationData = useCallback((item) => {
-    console.log('You clicked ', item);     
+    console.log('You clicked ', item);
     setSelectedStation(item);
   }, []);
-
-  const render_basic_info_item = (item: IReportBasicInfo) => {
-    return (
-      <CardItem bordered>
-        <Body>
-          <View
-            style={{
-              flexDirection: "row",
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
-            <View style={{ flex: 1, justifyContent: "center" }}>
-              <Text style={{ textAlign: "center", fontSize: 8 }}>
-                {item.caseid}
-              </Text>
-            </View>
-            <View style={{ flex: 1, justifyContent: "center" }}>
-              <Text style={{ textAlign: "center", fontSize: 8 }}>
-                {item.lane}
-              </Text>
-            </View>
-            <View style={{ flex: 1, justifyContent: "center" }}>
-              <Text style={{ textAlign: "center", fontSize: 8 }}>
-                {item.subject}
-              </Text>
-            </View>
-            <View style={{ flex: 1, justifyContent: "center" }}>
-              <Text style={{ textAlign: "center", fontSize: 8 }}>
-                {item.category}
-              </Text>
-            </View>
-          </View>
-        </Body>
-      </CardItem>
-    );
-  };
-
-  // const render_road_defect_item = (item: IRoadDefect) => {
-  //   return (
-  //     <CardItem bordered>
-  //       <Body>
-  //         <View
-  //           style={{
-  //             flexDirection: "row",
-  //             flex: 1,
-  //             justifyContent: "center",
-  //             alignItems: "center",
-  //           }}>
-  //           <View style={{ flex: 1, justifyContent: "center" }}>
-  //             <Text style={{ textAlign: "center", fontSize: 8 }}>
-  //               {item.position}
-  //             </Text>
-  //           </View>
-  //           <View style={{ flex: 1, justifyContent: "center" }}>
-  //             <Text style={{ textAlign: "center", fontSize: 8 }}>
-  //               {item.name}
-  //             </Text>
-  //           </View>
-  //           <View style={{ flex: 1, justifyContent: "center" }}>
-  //             <Text style={{ textAlign: "center", fontSize: 8 }}>
-  //               {item.desc}
-  //             </Text>
-  //           </View>
-  //         </View>
-  //       </Body>
-  //     </CardItem>
-  //   );
-  // };
 
   const saveReport = () => (
     <Button transparent onPress={
@@ -178,47 +98,145 @@ function BasicReport(props: IProps) {
     </Button>
   )
 
+  const Image_Options = {
+    mediaType: "photo",
+    quality: 0.5,
+    maxHeight: 2000,
+    maxWidth: 2000,
+    saveToPhotos: false,
+    includeBase64: true,
+  };
+
+  function selectImageFromLibrary() {
+    launchImageLibrary(Image_Options, response => {
+      console.log({ response });
+      if (response.didCancel) {
+
+      } else if (response.errorCode) {
+        Alert.alert('提示', response.errorCode);
+      } else {
+        console.log('launchImageLibrary', response);
+        dispatch(requestUploadFile({ uri: response.uri!, type: response.type!, name: response.fileName!, base64: response.base64!, size: response.fileSize! }))
+      }
+    });
+  }
+
+  function takeImage() {
+    launchCamera(Image_Options, response => {
+      console.log({ response });
+      if (response.didCancel) {
+
+      } else if (response.errorCode) {
+        console.log(response);
+        Alert.alert('提示', response.errorCode);
+      } else {
+        console.log('launchCamera', response);
+        dispatch(requestUploadFile({ uri: response.uri!, type: response.type!, name: response.fileName!, base64: response.base64!, size: response.fileSize! }))
+      }
+    });
+  }
+
+  function takeVideo() {
+    const options = {
+      mediaType: "video",
+      videoQuality: 'low',
+      durationLimit: 30,
+    }
+    launchCamera(options, response => {
+      console.log({ response });
+      if (response.didCancel) {
+
+      } else if (response.errorCode) {
+        console.log(response);
+        Alert.alert('提示', response.errorCode);
+      } else {
+        console.log('launchCamera', response);
+        dispatch(requestUploadFile({ uri: response.uri!, type: response.type!, name: response.fileName!, base64: response.base64!, size: response.fileSize! }))
+      }
+    });
+  }
+
+  const renderItem = ({ item }) => (
+    <TouchableOpacity>
+      <Image
+        source={{ uri: `${ApiConstants.FILE_BASE_URL}${item.savedName}` }}
+        style={styles.maintain_image}></Image>
+    </TouchableOpacity>
+  )
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Container>
         <StandardHeader isHome={true} body="巡查上报" right={saveReport} />
-        <Content  >
-          <ReporterSelector getData={getReportDateData}/>
-          <HighwaySelector getData={getHighwayData}/>
-          <StationForm getData={getStationData}/>
-         
+        <Content  style={{padding: 1}}>
+          <Text>AAACCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC</Text>
 
-          <Card style={styles.record_item}>
-            <CardItem header bordered>
+          <ReporterSelector getData={getReportDateData} />
+          <HighwaySelector getData={getHighwayData} />
+          <StationForm getData={getStationData} />
+
+          <View style={ styles.record_item}>
+            {/* <CardItem header bordered>
               <Text>现场照片</Text>
-            </CardItem>
-            <CardItem bordered>
+            </CardItem> */}
+            <CardItem >
               <Body>
-                <Grid>
-                  <Col style={styles.col}>
-                    <Image
-                      source={imagesConfig.maintain.m1}
-                      style={styles.maintain_image}></Image>
-                  </Col>
-                  <Col style={styles.col}>
-                    <Image
-                      source={imagesConfig.maintain.m2}
-                      style={styles.maintain_image}></Image>
-                  </Col>
-                  <Col style={styles.col}>
-                    <Image
-                      source={imagesConfig.maintain.m3}
-                      style={styles.maintain_image}></Image>
-                  </Col>
-                </Grid>
+                {
+                  tempSelectedImages && tempSelectedImages.length > 0 ?
+                    <FlatList
+                      horizontal={true}
+                      data={tempSelectedImages}
+                      renderItem={
+                        ({ item }) => (
+                          <TouchableOpacity
+                            onPress={
+                              () => {
+                                Alert.alert(
+                                  "提示",
+                                  "是否删除当前文件",
+                                  [
+                                    {
+                                      text: "取消",
+                                      style: "cancel"
+                                    },
+                                    { text: "确定", onPress: () => onDeleteUploadFile(item) }
+                                  ]
+                                );
+
+                              }
+                            }
+                          >
+                            <View style={styles.maintain_image_item}>
+                              <Image
+                                source={{ uri: `data:${item.type};base64,${item.base64}` }}
+                                style={styles.maintain_image}></Image>
+                            </View>
+                          </TouchableOpacity>
+                        )
+                      }
+                      keyExtractor={item => item.savedName}
+                    /> :
+                    <TouchableOpacity
+                      onPress={
+                        takeImage
+                      }
+                    >
+                      <View style={styles.maintain_image_item}>
+                        <Image
+                          source={imagesConfig.report.add_image}
+                          style={styles.maintain_image}></Image>
+                      </View>
+                    </TouchableOpacity>
+                }
+
               </Body>
             </CardItem>
-          </Card>
+          </View>
 
-          <Card style={styles.record_item}>
-            <CardItem header bordered>
+          <View style={styles.record_item}>
+            {/* <CardItem header bordered>
               <Text>最近录音</Text>
-            </CardItem>
+            </CardItem> */}
             <CardItem bordered>
               <Left>
                 <Icon active name="radio" style={{ color: "#DD5044" }} />
@@ -237,155 +255,15 @@ function BasicReport(props: IProps) {
                 <Text>00:13:44</Text>
               </Right>
             </CardItem>
-          </Card>
+          </View>
 
           <DiseaseForm getData={getDieaseData} />
-          {/* <Card style={styles.record_item}>
-            <CardItem header bordered>
-              <Text>病害信息</Text>
-            </CardItem>
-            <CardItem bordered>
-              <Body>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}>
-                  <View style={{ flex: 1, justifyContent: "center" }}>
-                    <Text style={{ textAlign: "center" }}>类别</Text>
-                  </View>
-                  <View style={{ flex: 1, justifyContent: "center" }}>
-                    <Text style={{ textAlign: "center" }}>分项名称</Text>
-                  </View>
-                  <View style={{ flex: 1, justifyContent: "center" }}>
-                    <Text style={{ textAlign: "center" }}>巡查项目</Text>
-                  </View>
-                  <View style={{ flex: 1, justifyContent: "center" }}>
-                    <Text style={{ textAlign: "center" }}>损坏情况</Text>
-                  </View>
-                </View>
-              </Body>
-            </CardItem>
-            <CardItem bordered>
-              <Body>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}>
-                  <View style={{ flex: 1, justifyContent: "center" }}>
-                    <DynamicallySelectedPicker
-                      items={mock_category}
-                      transparentItemRows={1}
-                      onScroll={setSelectedCategory}
-                      height={130}
-                      width={windowWidth}
-                      fontSize={15}
-                    />
-                  </View>
-                  <View style={{ flex: 1, justifyContent: "center" }}>
-                    <DynamicallySelectedPicker
-                      items={mock_sub_option}
-                      transparentItemRows={1}
-                      onScroll={({ index, item }) => {
-                        setSelectedSuboption(index);
-                      }}
-                      height={130}
-                      width={windowWidth}
-                      fontSize={15}
-                    />
-                  </View>
-                  <View style={{ flex: 1, justifyContent: "center" }}>
-                    <DynamicallySelectedPicker
-                      items={mock_Inspection}
-                      transparentItemRows={1}
-                      onScroll={setSelectedInspection}
-                      height={130}
-                      width={windowWidth}
-                      fontSize={15}
-                    />
-                  </View>
-                  <View style={{ flex: 1, justifyContent: "center" }}>
-                    <DynamicallySelectedPicker
-                      items={mock_Damage}
-                      transparentItemRows={1}
-                      onScroll={({ index, item }) => {
-                        console.log(index, item);
-                        setSelectedDamage({ index, item });
-                      }}
-                      height={130}
-                      width={windowWidth}
-                      fontSize={15}
-                    />
-                  </View>
-                </View>
-              </Body>
-            </CardItem>
-             <CardItem header bordered>
-              <Text>预估工程量</Text>
-            </CardItem>
-            <CardItem bordered>
-              <Body>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}>
-                  <View style={{ flex: 1, justifyContent: "center" }}>
-                    <Text style={{ textAlign: "center" }}>病害位置</Text>
-                  </View>
-                  <View style={{ flex: 1, justifyContent: "center" }}>
-                    <Text style={{ textAlign: "center" }}>分项名称</Text>
-                  </View>
-                  <View style={{ flex: 1, justifyContent: "center" }}>
-                    <Text style={{ textAlign: "center" }}>病害描述</Text>
-                  </View>
-                </View>
-              </Body>
-            </CardItem>
-            {mock_road_defects.map((item) => render_road_defect_item(item))}
-          </Card> */}
 
-          <Card style={styles.record_item}>
-            <CardItem header bordered>
-              <Text>病害基本信息</Text>
-            </CardItem>
-            <CardItem bordered>
-              <Body>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}>
-                  <View style={{ flex: 1, justifyContent: "center" }}>
-                    <Text style={{ textAlign: "center" }}>案件编号</Text>
-                  </View>
-                  <View style={{ flex: 1, justifyContent: "center" }}>
-                    <Text style={{ textAlign: "center" }}>车道</Text>
-                  </View>
-                  <View style={{ flex: 1, justifyContent: "center" }}>
-                    <Text style={{ textAlign: "center" }}>巡查项目</Text>
-                  </View>
-                  <View style={{ flex: 1, justifyContent: "center" }}>
-                    <Text style={{ textAlign: "center" }}>类别</Text>
-                  </View>
-                </View>
-              </Body>
-            </CardItem>
-            {mock_reports.map((item) => render_basic_info_item(item))}
-          </Card>
         </Content>
         <Footer>
           <FooterTab>
-            <Button vertical>
+
+            <Button vertical onPress={selectImageFromLibrary}>
               <Icon name="images-outline" />
               <Text>相册</Text>
             </Button>
@@ -393,11 +271,11 @@ function BasicReport(props: IProps) {
               <Icon name="mic-outline" />
               <Text>录音</Text>
             </Button>
-            <Button vertical active>
+            <Button vertical onPress={takeVideo}>
               <Icon active name="videocam-outline" />
               <Text>视频</Text>
             </Button>
-            <Button vertical>
+            <Button onPress={takeImage} vertical>
               <Icon name="camera-outline" />
               <Text>拍照</Text>
             </Button>

@@ -88,6 +88,7 @@ export const StationForm = (props: IProps) => {
 
                   <Item error={field.meta.error && field.meta.touched}>
                     <Input
+                    keyboardType = 'numeric'
                       {...field.input}
                     />
                     {field.meta.touched && field.meta.error && (
@@ -111,6 +112,7 @@ export const StationForm = (props: IProps) => {
                 <View style={{ flex: 2 }}>
                   <Item error={field.meta.error && field.meta.touched}>
                     <Input
+                    keyboardType = 'numeric'
                       {...field.input}
                     />
                     {field.meta.touched && field.meta.error && (

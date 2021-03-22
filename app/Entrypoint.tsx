@@ -16,9 +16,10 @@ import {
   DarkTheme as NavigationDarkTheme,
 } from '@react-navigation/native';
 
-import Navigator from 'app/navigation';
-import configureStore from 'app/store';
-import { IThemeState } from 'app/models/reducers/theme';
+import Navigator from './navigation';
+import configureStore from './store';
+import { IThemeState } from './store/theme/model';
+
 
 const PaperThemeDefault = {
   ...PaperDefaultTheme,

@@ -26,6 +26,9 @@ const imagesConfig = {
     cover: require("../assets/images/drawer-cover.png"),
     logo: require("../assets/images/drawer-logo.png"),   
   },
+  report: {
+    add_image: require("../assets/images/add-image.png"),
+  }
 };
 
 export default imagesConfig;

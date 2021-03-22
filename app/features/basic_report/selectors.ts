@@ -1,10 +1,15 @@
 import { createSelector } from 'reselect';
+import { IUploadFileSuccessResponse } from '../../store/file/model';
 import { IStoreState } from '../../store/types';
 import { IWorkload } from '../setting/models';
 import { IDealWithDesc, IWorkloadState } from '../setting/types';
 
 // export const workloadSelector = (state: IStoreState):IWorkloadState  => parseWorkload(state.settingReducer.workloads);
 export const workloadSelector = (state: IStoreState):IWorkloadState  => state.settingReducer.workloads;
+
+export const tempImagesSelector = (state: IStoreState):IUploadFileSuccessResponse[]  => state.uploadFileReducer.files.filter(file => file && file.savedName && file.type &&  file.type.startsWith('image'))
+
+export const tempFilesSelector = (state: IStoreState):IUploadFileSuccessResponse[]  => state.uploadFileReducer.files.filter(file => file && file.savedName)
 
 const parseWorkload = (workloads: IWorkload[]) => {
   const category = new Set<string>();

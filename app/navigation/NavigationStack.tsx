@@ -11,14 +11,17 @@ import BasicReport from '../features/basic_report/containers';
 import {CommodityList} from '../features/sample/containers/commodityList';
 import {AppHome} from '../features/sample/containers/appHome';
 import Setting from '../features/setting/containers';
-import Home from 'app/screens/Home';
-import ForgotPassword from 'app/screens/ForgotPassword';
+ 
+ 
  
 import { StatusBar } from 'react-native';
-import { ILoginState } from 'app/models/reducers/login';
+ 
  
 import { MenuSidebar } from './MenuSidebar';
 import BlankPage from '../features/blank/containers';
+import { ILoginState } from '../features/login/types';
+import Home from '../screens/Home';
+import ForgotPassword from '../screens/ForgotPassword';
 
 const Stack = createStackNavigator();
 const AuthStack = createStackNavigator();

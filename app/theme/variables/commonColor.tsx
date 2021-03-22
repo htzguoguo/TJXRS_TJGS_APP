@@ -8,6 +8,8 @@ const platform = Platform.OS;
 const platformStyle = undefined;
 
 export default {
+  background_color: '008A96',
+
   platformStyle,
   platform,
   // AndroidRipple

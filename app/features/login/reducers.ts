@@ -1,6 +1,6 @@
 
 
-import createReducer from 'app/lib/createReducer';
+ 
 import * as types from './types'; 
 
 import { ILoginState } from './types';
@@ -9,6 +9,7 @@ import {
   ILoginResponseState,
 } from './models';
 import { dropAuth, saveAuth } from '../../utils/authUtils';
+import createReducer from '../../lib/createReducer';
 
 const initialState: ILoginState = {
   isLoggedIn: false,
