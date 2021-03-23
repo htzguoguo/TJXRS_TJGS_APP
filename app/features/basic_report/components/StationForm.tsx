@@ -5,6 +5,7 @@ import createDecorator from 'final-form-focus'
 import { composeValidators, isAlphaNumeric, isMaxLength, isMinLength, mustBeNumber, isRequired } from '../../../components/validateRules';
 
 import { StyleSheet } from "react-native";
+import basic_styles from '../styles';
 interface IData {
   stationType: string;
   value: string;
@@ -142,7 +143,7 @@ export const StationForm = (props: IProps) => {
       render={
         ({ handleSubmit, form, submitting, pristine, values }) => (
           <Accordion
-          style={{marginTop: 5}}
+          style={styles.view_container}
             dataArray={dataArray}
             expanded={[0]}
             renderHeader={
@@ -165,11 +166,8 @@ export const StationForm = (props: IProps) => {
 }
 
 const styles = StyleSheet.create({
-
+  ...basic_styles,  
   stationContainer: {
     flex: 1,
-  },
-  forgotPasswordButton: {
-    paddingHorizontal: 0,
   },
 });

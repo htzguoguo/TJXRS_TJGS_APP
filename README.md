@@ -35,3 +35,7 @@ rm -rf android/app/src/main/res/raw/*
 cd android 
 ./gradlew assembleRelease 
 cd ..
+
+## bootsplash assets generation
+
+npx react-native generate-bootsplash bootsplash.jpg --background-color=F5FCFF --logo-width=100 --assets-path=assets --flavor=main

@@ -17,7 +17,7 @@ export default function* createUploadFileAsync(action) {
   //how to call api 
   const result  = yield call(uploadSingleFile, action.entity);     
  console.log('createUploadFileAsync', result);
-  if (result.response) {
+  if (result.response && result.response.savedName) {
     yield put(uploadFileActions.onUploadFileResponse({...action.entity, ...result.response}));
     yield put(loaderActions.disableLoader());
 
@@ -28,15 +28,9 @@ export default function* createUploadFileAsync(action) {
     // no need to call navigate as this is handled by redux store with SwitchNavigator
     //yield call(navigationActions.navigateToHome);
   } else {
-    yield put(uploadFileActions.uploadFileFailed(result.error.data.error));
-    yield put(loaderActions.disableLoader());
-    // Toast.show({
-    //   text: result.error.data.error,
-    //   buttonText: "关闭",
-    //   duration: 3000,
-    //   type: "warning"
-    // }) 
-    Alert.alert('提示：', result.error.data.error, [{
+    yield put(uploadFileActions.uploadFileFailed(result.response.error));
+    yield put(loaderActions.disableLoader());    
+    Alert.alert('提示：', result.response.error, [{
       text: '关闭',      
       style: 'cancel'
     },]);

@@ -28,6 +28,7 @@ const imagesConfig = {
   },
   report: {
     add_image: require("../assets/images/add-image.png"),
+    other_file: require("../assets/images/document.png"),
   }
 };
 

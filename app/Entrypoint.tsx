@@ -2,7 +2,7 @@
  * React Native App
  * Everything starts from the entrypoint
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { Provider, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/es/integration/react';
@@ -19,7 +19,7 @@ import {
 import Navigator from './navigation';
 import configureStore from './store';
 import { IThemeState } from './store/theme/model';
-
+import RNBootSplash from "react-native-bootsplash";
 
 const PaperThemeDefault = {
   ...PaperDefaultTheme,
@@ -72,6 +72,18 @@ const RootNavigation: React.FC = () => {
 };
 
 const Entrypoint: React.FC = () => {
+  useEffect(() => {
+    const init = async () => {
+      // …do multiple sync or async tasks
+    };
+
+    init().finally(async () => {
+      await RNBootSplash.hide({ fade: true });
+      console.log("Bootsplash has been hidden successfully");
+    });
+    
+  }, []);
+
   return (
     <Provider store={store}>
       <PersistGate loading={<ActivityIndicator />} persistor={persistor}>        

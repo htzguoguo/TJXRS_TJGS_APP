@@ -68,6 +68,29 @@ export async function RNFetchUploadFile(path, entity: IUploadFile) {
   ).then((resp) => {    
     return resp.json();
   })
+  .catch((error) => {
+    console.log('RNFetchUploadFile error', error);
+    if (!error.response) {
+      // network error
+      error.response = {
+        data: {
+          code: 'bf-600',
+          error: '无法连接到服务器',
+          context: {},
+        },
+      };
+    } else {
+      if (401 === error.response.statusCode) {
+        Alert.alert('提示：', '认证已过期，请重新登录。', [
+          {
+            text: '关闭',
+            style: 'cancel',
+          },
+        ]);
+      }
+    }
+    return Promise.reject(error.response);
+  });
 }
 
  

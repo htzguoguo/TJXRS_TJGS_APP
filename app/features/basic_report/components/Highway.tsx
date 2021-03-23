@@ -1,8 +1,9 @@
 import { Accordion, Icon, Item, Picker, Text, View } from "native-base"
 import React, { useState } from "react"
 import { Field, Form, FormSpy, useField, useForm } from "react-final-form";
+import { StyleSheet } from "react-native";
 import WhenFieldChanges from "../../../components/WhenFieldChanges";
-
+import basic_styles from '../styles';
 
 import { Direction_Data, Highway_Data, Lands_Data, Weather_Data } from "./highway_data";
 
@@ -229,7 +230,7 @@ export const HighwaySelector = (props: IProps) => {
       render={
         ({ handleSubmit, form, submitting, pristine, values }) => (
           <Accordion
-            style={{marginTop: 5}}
+            style={styles.view_container}
             dataArray={dataArray}
             expanded={[0]}
             renderHeader={
@@ -249,3 +250,7 @@ export const HighwaySelector = (props: IProps) => {
 
   )
 }
+
+const styles = StyleSheet.create({
+  ...basic_styles
+});

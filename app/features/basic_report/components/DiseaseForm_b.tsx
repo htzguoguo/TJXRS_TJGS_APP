@@ -11,7 +11,7 @@ import { IRoadDefect, IScrollPickerItem, IScrollPickerState } from "../types";
 import { IWorkload } from "../../setting/models";
 import { composeValidators, isRequired, mustBeNumber } from "../../../components/validateRules";
 
-
+import basic_styles from '../styles';
 interface IProps {
   getData: (values: {}) => void
 }
@@ -271,7 +271,8 @@ export const DiseaseForm = (props: IProps) => {
         ({ handleSubmit, form, submitting, pristine, values }) => {
 
           return (
-            <View style={styles.record_item}>
+            <View>
+            <View style={styles.view_container}>
               <CardItem header bordered>
                 <Text>病害信息</Text>
               </CardItem>
@@ -444,6 +445,9 @@ export const DiseaseForm = (props: IProps) => {
                   </View>
                 </Body>
               </CardItem>
+              </View>
+
+              <View style={[styles.view_container, {marginBottom: 5}]}>
               <CardItem header bordered>
                 <Text>预估工程量</Text>
               </CardItem>
@@ -535,7 +539,8 @@ export const DiseaseForm = (props: IProps) => {
                   props.getData(values)
                 }} />
             </View>
-          )
+        </View>    
+  )
         }
       }
     >
@@ -545,21 +550,7 @@ export const DiseaseForm = (props: IProps) => {
 }
 
 const styles = StyleSheet.create({
-  record_item: {
-    marginTop: 5,
-    marginBottom: 5,    
-    flex: 0,
-    elevation: 1,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 0,
-    marginVertical: 1,
-    borderRadius: 1,
-    marginHorizontal: 1,
-    padding: 0,
-    borderWidth: 0,
-  },
+  ...basic_styles,
   modal: {
     justifyContent: 'center',
     alignItems: 'center',

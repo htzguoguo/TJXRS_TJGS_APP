@@ -54,6 +54,7 @@ import GallerySwiper, { ImageObj } from "react-native-gallery-swiper";
 import ApiConstants from "../../../api/ApiConstants";
 import { Field, FormSpy, Form } from "react-final-form";
 import { report_data } from "../components/reports_data";
+import { ImageViewer } from "../components/ImageViewer";
 
 
 function BasicReport(props: IProps) {
@@ -245,12 +246,12 @@ function BasicReport(props: IProps) {
     const roadName = `${selectedHighway.weather},${selectedHighway.name},${selectedHighway.direction},${selectedHighway.lane}`;
     const station = `K${selectedStation.kilometer}+${selectedStation.meter}`;
     let defect = '';
-    if(selectedDiease && selectedDiease.defect && selectedDiease.defect.length > 0) {
+    if (selectedDiease && selectedDiease.defect && selectedDiease.defect.length > 0) {
       defect = `${selectedDiease.defect[0].dealwithdesc},${selectedDiease.defect[0].amount},${selectedDiease.defect[0].unit}`
     }
     return `${roadName},${station},${defect}`;
   }
- 
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Container>
@@ -260,106 +261,14 @@ function BasicReport(props: IProps) {
             <Text>{getReportSummary()}</Text>
           </Button>
         </Header>
-        <Content style={{ padding: 1 }}>
-          {/* <ReporterSelector getData={getReportDateData} /> */}
-          {/* <View style={[styles.record_item, { marginBottom: 5, backgroundColor: 'gray' }]}>
-            <CardItem header>
-             
-            </CardItem>
-          </View> */}
+        <Content style={{ padding: 1, backgroundColor: '#f4f4f4' }}>
           <HighwaySelector getData={getHighwayData} />
           <StationForm getData={getStationData} />
-          <View style={styles.record_item}>
-            <CardItem header bordered>
-              <Text>现场照片</Text>
-            </CardItem>
-            <CardItem >
-              <Body>
-                {
-                  tempSelectedImages && tempSelectedImages.length > 0 &&
-                  <FlatList
-                    horizontal={true}
-                    data={tempSelectedImages}
-                    renderItem={
-                      ({ item }) => (
-                        <TouchableOpacity
-                          onPress={
-                            () => {
-                              Alert.alert(
-                                "提示",
-                                "是否删除当前文件",
-                                [
-                                  {
-                                    text: "取消",
-                                    style: "cancel"
-                                  },
-                                  { text: "确定", onPress: () => onDeleteUploadFile(item) }
-                                ]
-                              );
-
-                            }
-                          }
-                        >
-                          <View style={styles.maintain_image_item}>
-                            <Image
-                              source={{ uri: `data:${item.type};base64,${item.base64}` }}
-                              style={styles.maintain_image}>
-
-                            </Image>
-                          </View>
-                        </TouchableOpacity>
-                      )
-                    }
-                    keyExtractor={item => item.savedName}
-                  />
-                  // :
-                  // <TouchableOpacity
-                  //   onPress={
-                  //     takeImage
-                  //   }
-                  // >
-                  //   <View style={styles.maintain_image_item}>
-                  //     <Image
-                  //       source={imagesConfig.report.add_image}
-                  //       style={styles.maintain_image}></Image>
-                  //   </View>
-                  // </TouchableOpacity>
-                }
-
-              </Body>
-            </CardItem>
-          </View>
-
-          <View style={styles.record_item}>
-            <CardItem header bordered>
-              <Text>最近录音</Text>
-            </CardItem>
-            <CardItem bordered>
-              <Left>
-                <Icon active name="radio" style={{ color: "#DD5044" }} />
-                <Text>我的录音</Text>
-              </Left>
-              <Right>
-                <Text>00:13:44</Text>
-              </Right>
-            </CardItem>
-            <CardItem bordered>
-              <Left>
-                <Icon active name="radio" style={{ color: "#3B579D" }} />
-                <Text>我的录音</Text>
-              </Left>
-              <Right>
-                <Text>00:13:44</Text>
-              </Right>
-            </CardItem>
-          </View>
-
+          <ImageViewer />
           <DiseaseForm getData={getDieaseData} />
-
         </Content>
         <Footer>
           <FooterTab>
-
             <Button vertical onPress={selectImageFromLibrary}>
               <Icon name="images-outline" />
               <Text>相册</Text>
@@ -378,7 +287,6 @@ function BasicReport(props: IProps) {
             </Button>
           </FooterTab>
         </Footer>
-
       </Container>
     </SafeAreaView>
   );
