@@ -15,16 +15,17 @@ export interface IUser {
     defaultMenuUrl: string;
     defaultMenuKey: string;
   };
-
+  id: string;
   name: string;
-  chsName: string;
-  engName: string;
-  password: string;
-  deptName: string;
-  deptNum: string;
-  menus: string;
+  truename: string;
+  dept: string;
+  position: string;
+  positionDesc: string;
   mobile: string;
+  menus: string;
   memo: string;
+  role: string;
+  companyId: string;
 }
 
 interface IBaseMenu {

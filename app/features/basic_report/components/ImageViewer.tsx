@@ -1,14 +1,15 @@
-import { Body, Button, CardItem, Text, View } from "native-base"
+import { Body, Button, CardItem, Text, View} from "native-base"
 import ImageZoomViewer from 'react-native-image-zoom-viewer';
+ 
 import Video from 'react-native-video';
 import Modal from 'react-native-modal';
 import React, { useState } from "react"
 import { Alert, FlatList, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteUploadFile } from "../../../store/file/actions";
-import { tempFilesSelector, tempImagesSelector } from "../selectors";
 import basic_styles from '../styles';
 import imagesConfig from "../../../config/images-config";
+import { tempFilesSelector } from "../../../store/file/selectors";
 export const ImageViewer = () => {
   const [isShowImageZoom, setShowImageZoom] = useState(false);
   const [selectedImages, setSelectedImages] = useState<any>([]);
@@ -16,6 +17,11 @@ export const ImageViewer = () => {
   const dispatch = useDispatch();
   const onDeleteUploadFile = (file) => {
     dispatch(deleteUploadFile(file));
+  }
+  const closeModal = () => {
+    if(isShowImageZoom) {
+      setShowImageZoom(false)
+    }
   }
   return (
     <View style={styles.view_container}>
@@ -93,7 +99,9 @@ export const ImageViewer = () => {
           <Modal
             isVisible={isShowImageZoom}
             coverScreen={true}
-            hasBackdrop={false}
+            hasBackdrop={true}
+            onBackButtonPress={closeModal}
+            onBackdropPress={closeModal}
           >
             <ImageZoomViewer
               enableSwipeDown={true}

@@ -1,22 +1,33 @@
-import { IWorkload } from './models';
+import { IWorkloadItem } from './models';
 export const WORKLOAD_QUERY_REQUEST = 'WORKLOAD_QUERY_REQUEST';
 export const WORKLOAD_QUERY_RESPONSE = 'WORKLOAD_QUERY_RESPONSE';
 export const WORKLOAD_FAILED = 'WORKLOAD_FAILED';
 
-export interface ISettingState {
-  workloads: IWorkloadState;  
+export interface IWorkloadState {
+  workloads: IWorkload;  
   workloads_count: number;
   error: string;
 }
 
 
 
-export interface IWorkloadState {
+export interface IWorkload {
   category: string[];
   parent_category: {};
   subname: {};
   viewresult: {};
   dealwith: {};
+}
+
+export interface IRoadDefect {
+  dealwithdesc: string;
+  unit: string;
+  amount: number;
+  length: number;
+  width: number;
+  depth: number;
+  standard: string;
+  associate: string;
 }
 
 

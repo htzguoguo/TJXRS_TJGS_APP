@@ -2,16 +2,17 @@ import { AxiosResponse } from 'axios';
 import { apiClient } from '../../../api';
 import { IServerResponseFailure } from '../../../api/types';
 import { buildSearchParamsUrl } from '../../../utils/searchUtils';
-import { ILoginSuccessResponse } from '../../login/models';
+import { IHighwayPageDto } from './highway.dto';
+
  
 
-const PREFIX: string = 'workload';
+const PREFIX: string = 'highway';
 
-export function queryWorkload() {
+export function queryHighway() {
   const url = buildSearchParamsUrl(PREFIX, {take: 9999});
   return apiClient
     .get(url)
-    .then((response: AxiosResponse<ILoginSuccessResponse>) => ({ response }))
+    .then((response: AxiosResponse<IHighwayPageDto>) => ({ response }))
     .catch((error: AxiosResponse<IServerResponseFailure>) => ({ error }));
 }
 

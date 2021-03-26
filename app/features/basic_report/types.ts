@@ -25,13 +25,6 @@ export interface IScrollPickerState {
   item: IScrollPickerItem;
 }
 
-export interface IRoadDefect {
-  dealwithdesc: string;
-  unit: string;
-  amount: number;
-  length: number;
-  width: number;
-  depth: number;
-  standard: string;
-  associate: string;
-}
+
+
+

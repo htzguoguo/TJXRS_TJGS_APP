@@ -6,83 +6,84 @@ import Modal from 'react-native-modal';
 import DynamicallySelectedPicker from "react-native-dynamically-selected-picker";
 import { Dimensions, StyleSheet, TouchableHighlight } from "react-native";
 import { useSelector } from "react-redux";
-import { workloadSelector } from "../selectors";
-import { IRoadDefect, IScrollPickerItem, IScrollPickerState } from "../types";
-import { IWorkload } from "../../setting/models";
+import {   IScrollPickerItem, IScrollPickerState } from "../types";
 import { composeValidators, isRequired, mustBeNumber } from "../../../components/validateRules";
 
 import basic_styles from '../styles';
+import { IWorkloadItem } from "../../../store/workload/models";
+import { workloadSelector } from "../../../store/workload/selectors";
+import { IRoadDefect } from "../../../store/workload/types";
 interface IProps {
   getData: (values: {}) => void
 }
 
-const getObjectFirstItemOrEmpty = (col: Object | null | undefined, key: string): string => {
+// const getObjectFirstItemOrEmpty = (col: Object | null | undefined, key: string): string => {
 
-  let result = '';
-  if (col && col.hasOwnProperty(key)) {
-    const arr = col[key];
-    if (arr && arr.length > 0) {
-      result = arr[0];
-    }
-  }
-  return result;
-}
+//   let result = '';
+//   if (col && col.hasOwnProperty(key)) {
+//     const arr = col[key];
+//     if (arr && arr.length > 0) {
+//       result = arr[0];
+//     }
+//   }
+//   return result;
+// }
 
-const getObjectArrayOrEmpty = (col: Object | null | undefined, key: string): IScrollPickerItem[] => {
+// const getObjectArrayOrEmpty = (col: Object | null | undefined, key: string): IScrollPickerItem[] => {
 
-  let result: IScrollPickerItem[] = [];
-  if (col && col.hasOwnProperty(key)) {
-    const arr = col[key];
-    if (arr && arr.length > 0) {
-      result = arr.map(item => ({ label: item, value: item }));
-    }
-  }
-  return result;
-}
+//   let result: IScrollPickerItem[] = [];
+//   if (col && col.hasOwnProperty(key)) {
+//     const arr = col[key];
+//     if (arr && arr.length > 0) {
+//       result = arr.map(item => ({ label: item, value: item }));
+//     }
+//   }
+//   return result;
+// }
 
-const getArrayFirstItemOrEmpty = (col: string[] | null | undefined) => {
+// const getArrayFirstItemOrEmpty = (col: string[] | null | undefined) => {
 
-  if (col && col.length > 0) {
-    return col[0];
-  }
-  return '';
-}
+//   if (col && col.length > 0) {
+//     return col[0];
+//   }
+//   return '';
+// }
 
-const getArrayOrEmpty = (col: string[] | null | undefined): IScrollPickerItem[] => {
+// const getArrayOrEmpty = (col: string[] | null | undefined): IScrollPickerItem[] => {
 
-  let result: IScrollPickerItem[] = [];
-  if (col) {
-    const arr = col;
-    if (arr && arr.length > 0) {
-      result = arr.map(item => ({ label: item, value: item }));
-    }
-  }
-  return result;
-}
+//   let result: IScrollPickerItem[] = [];
+//   if (col) {
+//     const arr = col;
+//     if (arr && arr.length > 0) {
+//       result = arr.map(item => ({ label: item, value: item }));
+//     }
+//   }
+//   return result;
+// }
 
-const getDefectArrayOrEmpty = (col: Object | null | undefined, key: string): IRoadDefect[] => {
-  let result: IRoadDefect[] = [];
-  if (col && col.hasOwnProperty(key)) {
-    const arr = col[key];
-    if (arr && arr.length > 0) {
-      result = arr.map(item => {
-        //const str: string[] = item.split(",");
-        const obj: IWorkload = item;
-        return {
-          dealwithdesc: obj.DealWithDesc ? obj.DealWithDesc : '',
-          unit: obj.MonitoringUnit ? obj.MonitoringUnit : '',
-          amount: 1,
-          length: 1,
-          width: 1,
-          depth: 1,
-          standard: obj.RegistStandard ? obj.RegistStandard : '',
-          associate: obj.AssociateUsersID ? obj.AssociateUsersID : '',
-        }
-      });
-    }
-  }
-  return result;
-}
+// const getDefectArrayOrEmpty = (col: Object | null | undefined, key: string): IRoadDefect[] => {
+//   let result: IRoadDefect[] = [];
+//   if (col && col.hasOwnProperty(key)) {
+//     const arr = col[key];
+//     if (arr && arr.length > 0) {
+//       result = arr.map(item => {
+//         //const str: string[] = item.split(",");
+//         const obj: IWorkloadItem = item;
+//         return {
+//           dealwithdesc: obj.DealWithDesc ? obj.DealWithDesc : '',
+//           unit: obj.MonitoringUnit ? obj.MonitoringUnit : '',
+//           amount: 1,
+//           length: 1,
+//           width: 1,
+//           depth: 1,
+//           standard: obj.RegistStandard ? obj.RegistStandard : '',
+//           associate: obj.AssociateUsersID ? obj.AssociateUsersID : '',
+//         }
+//       });
+//     }
+//   }
+//   return result;
+// }
 
 let focusOnError = createDecorator()
 export const DiseaseForm = (props: IProps) => {
@@ -94,21 +95,21 @@ export const DiseaseForm = (props: IProps) => {
   const windowWidth = Dimensions.get("window").width / 4;
   const workloads = useSelector(workloadSelector);
 
-  const [selectedCategory, setSelectedCategory] = useState<string>(getArrayFirstItemOrEmpty(workloads.category));
+  const [selectedCategory, setSelectedCategory] = useState<string>(workloads.getDefaultCategory());
 
-  const [selectedSuboption, setSelectedSuboption] = useState(getObjectFirstItemOrEmpty(workloads.parent_category, selectedCategory));
+  const [selectedSuboption, setSelectedSuboption] = useState(workloads.getDefaultSuboption(selectedCategory));
 
-  const [selectedInspection, setSelectedInspection] = useState(getObjectFirstItemOrEmpty(workloads.subname, `${selectedCategory}-${selectedSuboption}`));
+  const [selectedInspection, setSelectedInspection] = useState(workloads.getDefaultInspection(selectedCategory, selectedSuboption));
 
-  const [selectedDamage, setSelectedDamage] = useState(getObjectFirstItemOrEmpty(workloads.viewresult, `${selectedCategory}-${selectedSuboption}-${selectedInspection}`));
+  const [selectedDamage, setSelectedDamage] = useState(workloads.getDefaultDamage(selectedCategory, selectedSuboption,selectedInspection));
 
-  const [selectedDefect, setSelectedDefect] = useState(getDefectArrayOrEmpty(workloads.dealwith, `${selectedCategory}-${selectedSuboption}-${selectedInspection}-${selectedDamage}`));
+  const [selectedDefect, setSelectedDefect] = useState(workloads.getDefaultDefect(selectedCategory, selectedSuboption,selectedInspection, selectedDamage));
 
 
-  const category_data = getArrayOrEmpty(workloads.category);
-  const suboption_data = getObjectArrayOrEmpty(workloads.parent_category, selectedCategory);
-  const inspection_data = getObjectArrayOrEmpty(workloads.subname, `${selectedCategory}-${selectedSuboption}`);
-  const damage_data = getObjectArrayOrEmpty(workloads.viewresult, `${selectedCategory}-${selectedSuboption}-${selectedInspection}`);
+  const category_data = workloads.getCategory();
+  const suboption_data = workloads.getsuboption(selectedCategory);
+  const inspection_data = workloads.getInspection(selectedCategory, selectedSuboption);
+  const damage_data = workloads.getDamage(selectedCategory, selectedSuboption, selectedInspection);
 
   //const defect_data = getDefectArrayOrEmpty(workloads.dealwith, `${selectedCategory}-${selectedSuboption}-${selectedInspection}-${selectedDamage}`);
   const render_road_defect_item = (form, item: IRoadDefect) => {
@@ -322,15 +323,15 @@ export const DiseaseForm = (props: IProps) => {
 
                                 props.input.onChange(item.value)
                                 const cur_category = item.value;
-                                const cur_suboption = getObjectFirstItemOrEmpty(workloads.parent_category, cur_category);
-                                const cur_inspection = getObjectFirstItemOrEmpty(workloads.subname, `${cur_category}-${cur_suboption}`)
-                                const cur_damage = getObjectFirstItemOrEmpty(workloads.viewresult, `${cur_category}-${cur_suboption}-${cur_inspection}`)
+                                const cur_suboption = workloads.getDefaultSuboption(cur_category);
+                                const cur_inspection = workloads.getDefaultInspection(cur_category, cur_suboption )
+                                const cur_damage = workloads.getDefaultDamage(cur_category, cur_suboption , cur_inspection)
 
                                 setSelectedCategory(item.value);
                                 setSelectedSuboption(cur_suboption)
                                 setSelectedInspection(cur_inspection)
                                 setSelectedDamage(cur_damage)
-                                setSelectedDefect(getDefectArrayOrEmpty(workloads.dealwith, `${cur_category}-${cur_suboption}-${cur_inspection}-${cur_damage}`));
+                                setSelectedDefect(workloads.getDefaultDefect(cur_category, cur_suboption , cur_inspection, cur_damage));
                                 suboptionEl.current.scrollToInitialPosition();
                                 inspectionEl.current.scrollToInitialPosition();
                                 damageEl.current.scrollToInitialPosition();
@@ -360,13 +361,13 @@ export const DiseaseForm = (props: IProps) => {
                                   props.input.onChange(item.value)
                                   const cur_category = selectedCategory;
                                   const cur_suboption = item.value;
-                                  const cur_inspection = getObjectFirstItemOrEmpty(workloads.subname, `${cur_category}-${cur_suboption}`)
-                                  const cur_damage = getObjectFirstItemOrEmpty(workloads.viewresult, `${cur_category}-${cur_suboption}-${cur_inspection}`)
+                                  const cur_inspection = workloads.getDefaultInspection(cur_category, cur_suboption )
+                                  const cur_damage = workloads.getDefaultDamage(cur_category, cur_suboption , cur_inspection)
 
                                   setSelectedSuboption(cur_suboption)
                                   setSelectedInspection(cur_inspection)
                                   setSelectedDamage(cur_damage)
-                                  setSelectedDefect(getDefectArrayOrEmpty(workloads.dealwith, `${cur_category}-${cur_suboption}-${cur_inspection}-${cur_damage}`));
+                                  setSelectedDefect(workloads.getDefaultDefect(cur_category, cur_suboption , cur_inspection, cur_damage));
                                   inspectionEl.current.scrollToInitialPosition();
                                   damageEl.current.scrollToInitialPosition();
                                 }}
@@ -397,11 +398,11 @@ export const DiseaseForm = (props: IProps) => {
                                   const cur_category = selectedCategory;
                                   const cur_suboption = selectedSuboption;
                                   const cur_inspection = item.value;
-                                  const cur_damage = getObjectFirstItemOrEmpty(workloads.viewresult, `${cur_category}-${cur_suboption}-${cur_inspection}`)
+                                  const cur_damage = workloads.getDefaultDamage(cur_category, cur_suboption , cur_inspection)
 
                                   setSelectedInspection(cur_inspection)
                                   setSelectedDamage(cur_damage)
-                                  setSelectedDefect(getDefectArrayOrEmpty(workloads.dealwith, `${cur_category}-${cur_suboption}-${cur_inspection}-${cur_damage}`));
+                                  setSelectedDefect(workloads.getDefaultDefect(cur_category, cur_suboption , cur_inspection, cur_damage));
                                   damageEl.current.scrollToInitialPosition();
                                 }}
                                 height={130}
@@ -430,7 +431,7 @@ export const DiseaseForm = (props: IProps) => {
                                 onScroll={({ index, item }) => {
                                   props.input.onChange(item.value)
                                   setSelectedDamage(item.value);
-                                  setSelectedDefect(getDefectArrayOrEmpty(workloads.dealwith, `${selectedCategory}-${selectedSuboption}-${selectedInspection}-${item.value}`));
+                                  setSelectedDefect(workloads.getDefaultDefect(selectedCategory, selectedSuboption , selectedInspection, item.value));
                                 }}
                                 height={130}
                                 width={windowWidth}

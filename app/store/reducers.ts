@@ -1,5 +1,6 @@
 import * as loginReducer from '../features/login/reducers';
-import * as settingReducer  from '../features/setting/reducers';
+import * as workloadReducer  from './workload/reducers';
+import * as highwayReducer  from './highway/reducers';
 import * as basicReportReducer  from '../features/basic_report/reducers';
 import * as loadingReducer from './loader/reducer';
 import * as themeReducer from './theme/reducer';
@@ -9,7 +10,8 @@ export default Object.assign(
   loginReducer,
   loadingReducer,
   themeReducer,
-  settingReducer,
+  workloadReducer,
   basicReportReducer,
-  uploadFileReducer
+  uploadFileReducer,
+  highwayReducer
 );

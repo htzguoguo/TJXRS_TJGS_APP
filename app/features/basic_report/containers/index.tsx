@@ -40,32 +40,30 @@ import {
   IProps,
 } from "../types";
 import { StandardHeader } from "../../../components/Header";
-import imagesConfig from "../../../config/images-config";
-import { HighwaySelector } from "../components/Highway";
-import { ReporterSelector } from "../components/ReportDate";
-import { StationForm } from "../components/StationForm";
+import { HighwaySelector, IHighwaySelectorData } from "../components/Highway";
+import { IStationSelectorData, StationForm } from "../components/StationForm";
 import { DiseaseForm } from "../components/DiseaseForm_b";
 import { useDispatch, useSelector } from "react-redux";
 import { requestCreateBasicReport } from '../actions';
 import { deleteUploadFile, requestUploadFile } from "../../../store/file/actions";
-import { IStoreState } from "../../../store/types";
-import { tempFilesSelector, tempImagesSelector } from "../selectors";
-import GallerySwiper, { ImageObj } from "react-native-gallery-swiper";
-import ApiConstants from "../../../api/ApiConstants";
 import { Field, FormSpy, Form } from "react-final-form";
 import { report_data } from "../components/reports_data";
 import { ImageViewer } from "../components/ImageViewer";
+import { padNumber } from "../../../utils/stringUtils";
+import { tempFilesSelector } from "../../../store/file/selectors";
+import { Direction_Data, Highway_Data, Lands_Data, Weather_Data } from "../components/highway_data";
+import { highwaySelector } from "../../../store/highway/selectors";
 
 
 function BasicReport(props: IProps) {
   const windowWidth = Dimensions.get("window").width / 4;
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const tempSelectedImages = useSelector((tempImagesSelector));
   const tempSelectedFiles = useSelector((tempFilesSelector));
+  const highwayData = useSelector(highwaySelector);
   const [selectedDiease, setSelectedDiease] = useState({});
   const [selectedReportDate, setSelectedReportDate] = useState({ report: report_data[0], date: new Date() });
-  const [selectedHighway, setSelectedHighway] = useState({});
-  const [selectedStation, setSelectedStation] = useState({});
+  const [selectedHighway, setSelectedHighway] = useState<IHighwaySelectorData>({ weather: Weather_Data[0], name: highwayData.getDefaultName(), direction: highwayData.getDefaultDirection(), lane: Lands_Data[0] });
+  const [selectedStation, setSelectedStation] = useState<IStationSelectorData>({ stationType: '道路桩号', kilometer: '0', meter: '0', endkilometer: '0', endmeter: '0' });
   const dispatch = useDispatch();
   const onPostBasicReport = () => {
     const files = tempSelectedFiles.map(item => ({ ...item, base64: '' }))
@@ -149,7 +147,7 @@ function BasicReport(props: IProps) {
                 props => (
                   <View style={{ justifyContent: 'flex-start', alignItems: 'baseline' }}>
                     <Button warning transparent={true} onPress={() => setShowDatePicker(true)}  >
-                      <Text>{`${values.date.getFullYear()}${values.date.getMonth() + 1
+                      <Text>{`${values.date.getFullYear()}${padNumber(values.date.getMonth() + 1)
                         }${values.date.getDate()}`}</Text>
                     </Button>
                     {showDatePicker && (
@@ -262,8 +260,8 @@ function BasicReport(props: IProps) {
           </Button>
         </Header>
         <Content style={{ padding: 1, backgroundColor: '#f4f4f4' }}>
-          <HighwaySelector getData={getHighwayData} />
-          <StationForm getData={getStationData} />
+          <HighwaySelector getData={getHighwayData} highway_data={highwayData} initial_data={selectedHighway} Lands_Data={Lands_Data} Weather_Data={Weather_Data} />
+          <StationForm getData={getStationData} initial_data={selectedStation} />
           <ImageViewer />
           <DiseaseForm getData={getDieaseData} />
         </Content>

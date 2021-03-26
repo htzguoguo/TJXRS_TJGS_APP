@@ -3,11 +3,12 @@ import React, { useState } from "react"
 import { Field, Form, FormSpy, useField, useForm } from "react-final-form";
 import { StyleSheet } from "react-native";
 import WhenFieldChanges from "../../../components/WhenFieldChanges";
+import { highwayFactory } from "../../../store/highway/highwayFactory";
 import basic_styles from '../styles';
 
-import { Direction_Data, Highway_Data, Lands_Data, Weather_Data } from "./highway_data";
+// import { Direction_Data, Highway_Data, Lands_Data, Weather_Data } from "./highway_data";
 
-interface IData {
+export interface IHighwaySelectorData {
   weather: string;
   name: string;
   direction: string;
@@ -15,12 +16,16 @@ interface IData {
 }
 
 interface IProps {
-  getData: (values) => void
+  getData: (values) => void;
+  highway_data: highwayFactory;
+  initial_data: IHighwaySelectorData;
+  Lands_Data: string[];
+  Weather_Data: string[];
 }
 
-const InitialValue: IData = { weather: Weather_Data[0], name: Highway_Data[0], direction: Direction_Data[0][0], lane: Lands_Data[0] }
+//const InitialValue: IHighwaySelectorData = { weather: Weather_Data[0], name: Highway_Data[0], direction: Direction_Data[0][0], lane: Lands_Data[0] }
 
-export const HighwaySelector = (props: IProps) => {
+export const HighwaySelector = (comProps: IProps) => {
   const dataArray = [
     { title: "First Element", content: " " },
   ];
@@ -56,7 +61,8 @@ export const HighwaySelector = (props: IProps) => {
 
   const render_direction = (values) => {
 
-    const result = Direction_Data[Highway_Data.indexOf(values.name)];
+    // const result = Direction_Data[Highway_Data.indexOf(values.name)];
+    const result = comProps.highway_data.getDirection(values.name)
     // values.direction = result[0];
     // console.log('render_direction', values);
     return result.map(
@@ -88,7 +94,7 @@ export const HighwaySelector = (props: IProps) => {
                   placeholderStyle={{ color: "#bfc6ea" }}
                   placeholderIconColor="#007aff">
                   {
-                    Weather_Data.map(
+                    comProps.Weather_Data.map(
                       (item, index) => {
                         return <Picker.Item key={index} label={item} value={item} />
                       }
@@ -111,7 +117,7 @@ export const HighwaySelector = (props: IProps) => {
                   onValueChange={
                     (value, position) => {
                       props.input.onChange(value)
-                      form.change('direction', Direction_Data[Highway_Data.indexOf(value)][0]);
+                      form.change('direction', comProps.highway_data.getDirection(value)[0] );
                       // directionField.input.onChange(Direction_Data[Highway_Data.indexOf(value)][0]);                           
                     }
 
@@ -122,7 +128,7 @@ export const HighwaySelector = (props: IProps) => {
                   placeholderStyle={{ color: "#bfc6ea" }}
                   placeholderIconColor="#007aff">
                   {
-                    Highway_Data.map(
+                    comProps.highway_data.getHighwayNames().map(
                       (item, index) => {
                         return <Picker.Item key={index} label={item} value={item} />
                       }
@@ -192,7 +198,7 @@ export const HighwaySelector = (props: IProps) => {
                   placeholderStyle={{ color: "#bfc6ea" }}
                   placeholderIconColor="#007aff">
                   {
-                    Lands_Data.map(
+                    comProps.Lands_Data.map(
                       (item, index) => {
                         return <Picker.Item key={index} label={item} value={item} />
                       }
@@ -216,7 +222,7 @@ export const HighwaySelector = (props: IProps) => {
             // setHighwayIndex(Highway_Data.indexOf(values.name))
             // console.log(values);
             // setSelectedData({...values});
-            props.getData(values)
+            comProps.getData(values)
           }} />
       </View>
     )
@@ -225,14 +231,14 @@ export const HighwaySelector = (props: IProps) => {
 
   return (
     <Form
-      initialValues={InitialValue}
+      initialValues={comProps.initial_data}
       onSubmit={() => { }}
       render={
         ({ handleSubmit, form, submitting, pristine, values }) => (
           <Accordion
             style={styles.view_container}
             dataArray={dataArray}
-            expanded={[0]}
+            expanded={[]}
             renderHeader={
               (item, expanded: boolean) =>
                 render_highway_header(handleSubmit, form, submitting, pristine, values, expanded)

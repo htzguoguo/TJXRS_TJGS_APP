@@ -1,6 +1,6 @@
 import { IPageMetaDto } from './../../../common/dto/IPageMetaDto';
 import { IPageOptionsDto } from "../../../common/dto/IPageOptionsDto";
-import { IWorkload } from '../models';
+import { IWorkloadItem } from '../models';
 
 export interface IWorkloadPageOptionsDto extends IPageOptionsDto {  
   CaseCatalog: string;
@@ -11,6 +11,6 @@ export interface IWorkloadPageOptionsDto extends IPageOptionsDto {
 }
 
 export interface IWorkloadPageDto {
-  data: IWorkload[];
+  data: IWorkloadItem[];
   meta: IPageMetaDto
 }

@@ -1,6 +1,9 @@
 import { IWorkloadPageDto } from "./services/workload.dto";
 
-export interface IWorkload {
+ 
+
+
+export interface IWorkloadItem {
   id?: number;
 
   CaseCatalog: string;

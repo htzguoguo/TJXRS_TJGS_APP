@@ -6,3 +6,8 @@ export interface IServerResponseFailure {
   path: string;
   error: string;
 }
+
+export interface IQueryResponseState<T> {
+  type: String;
+  response: T;
+}
