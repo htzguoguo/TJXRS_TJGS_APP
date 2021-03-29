@@ -1,6 +1,8 @@
 import { ILoginState } from "../features/login/types";
 import { IWorkloadState } from "./workload/types";
 import { IHighwayState } from "./highway/types";
+import { IBridgeSubNameState } from "./bridge/types";
+import { IStationSubNameState } from "./station/types";
 import { IBasicReportState } from "../features/basic_report/types";
 import { ILoading } from "./loader/model";
 import { IThemeState } from "./theme/model";
@@ -14,4 +16,6 @@ export interface IStoreState {
   highwayReducer: IHighwayState,
   basicReportReducer: IBasicReportState;
   uploadFileReducer: IUploadFilesState;
+  bridgeReducer: IBridgeSubNameState;
+  stationReducer: IStationSubNameState;
 }

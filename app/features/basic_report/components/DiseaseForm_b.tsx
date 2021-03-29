@@ -491,7 +491,7 @@ export const DiseaseForm = (props: IProps) => {
                 onModalShow={
                   () => {
                     const item = selectedEditItem!;
-                    console.log('Modal onModalShow', item);
+                  
                     form.change('length', item.length)
                     form.change('width', item.width)
                     form.change('depth', item.depth)

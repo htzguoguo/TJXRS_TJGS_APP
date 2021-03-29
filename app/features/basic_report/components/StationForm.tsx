@@ -6,24 +6,37 @@ import { composeValidators, isAlphaNumeric, isMaxLength, isMinLength, mustBeNumb
 
 import { StyleSheet } from "react-native";
 import basic_styles from '../styles';
+import { useSelector } from "react-redux";
+import { bridgeSelector } from "../../../store/bridge/selectors";
+import { stationSelector } from "../../../store/station/selectors";
+import { getStationSummary } from "../helper";
+import { BridgeFactory } from "../../../store/bridge/bridgeFactory";
+import { StationFactory } from "../../../store/station/stationFactory";
 export interface IStationSelectorData {
   stationType: string;
   kilometer: string;
   meter: string;
-  endkilometer: string;
-  endmeter: string;
+  endkilometer?: string;
+  endmeter?: string;
+  station?: string;
+  staterange?: string;
+  subname?: string;
+  stationOther?: string;
 }
 
 interface IProps {
   getData: (values: IStationSelectorData) => void;
   initial_data: IStationSelectorData;
+  highway_name: string;
+  bridgeFactory: BridgeFactory;
+  stationFactory: StationFactory;
 }
 const dataArray = [
   { title: "First Element", content: " " },
 ];
 let focusOnError = createDecorator()
-export const StationForm = (props: IProps) => {
-
+export const StationForm = (componentProps: IProps) => {
+ 
   const render_header = (handleSubmit, form, submitting, pristine, values, expanded: boolean) => {
     return (
       <View
@@ -34,7 +47,7 @@ export const StationForm = (props: IProps) => {
           alignItems: "center",
         }}>
         <Text style={{ fontWeight: "600" }}>
-          {`${values.stationType}:K${values.kilometer}+${values.meter}`}
+          {getStationSummary(values)}
         </Text>
         {expanded ? (
           <Icon
@@ -52,57 +65,202 @@ export const StationForm = (props: IProps) => {
     );
   };
 
+  const render_text_input = (fieldName: string) => {
+    return (
+      <Field
+        name={fieldName}
+      >
+        {
+          field => (
+            <View style={{ flex: 2 }}>
+              <Item error={field.meta.error && field.meta.touched}>
+                <Input
+                  {...field.input}
+                />
+                {field.meta.touched && field.meta.error && (
+                  <Text>{field.meta.error}</Text>
+                )}
+              </Item>
+            </View>
+          )
+        }
+      </Field>
+    )
+  }
+
   const render_number_input = (fieldName: string) => {
     return (
       <Field
-      name={fieldName}
-      validate={composeValidators(isRequired, mustBeNumber, isMinLength(1), isMaxLength(3))}
-      warn={composeValidators(mustBeNumber, isMinLength(1), isMaxLength(3))}
-    >
-      {
-        field => (
-          <View style={{ flex: 2 }}>
-            <Item error={field.meta.error && field.meta.touched}>
-              <Input
-                keyboardType='numeric'
-                {...field.input}
-              />
-              {field.meta.touched && field.meta.error && (
-                <Text>{field.meta.error}</Text>
-              )}
-            </Item>
-          </View>
-        )
-      }
-    </Field>
+        name={fieldName}
+        validate={composeValidators(isRequired, mustBeNumber, isMinLength(1), isMaxLength(3))}
+        warn={composeValidators(mustBeNumber, isMinLength(1), isMaxLength(3))}
+      >
+        {
+          field => (
+            <View style={{ flex: 2 }}>
+              <Item error={field.meta.error && field.meta.touched}>
+                <Input
+                  keyboardType='numeric'
+                  {...field.input}
+                />
+                {field.meta.touched && field.meta.error && (
+                  <Text>{field.meta.error}</Text>
+                )}
+              </Item>
+            </View>
+          )
+        }
+      </Field>
     )
+  }
+
+  const render_station_form = () => {
+    return (
+      <View>
+        <Field
+          name="station"
+          render={
+            props => (
+              <Item picker>
+                <Picker
+                  mode="dropdown"
+                  selectedValue={props.input.value}
+                  onValueChange={
+                    (value, position) => {
+                      props.input.onChange(value)
+                    }
+                  }
+                  iosIcon={<Icon name="ios-arrow-down" />}
+                  style={{ width: "90%" }}
+                  placeholder="站区"
+                  placeholderStyle={{ color: "#bfc6ea" }}
+                  placeholderIconColor="#007aff">
+                  {
+                    componentProps.stationFactory.getStations(componentProps.highway_name).map(
+                      (item, index) => {
+                        return <Picker.Item key={index} label={item} value={item} />
+                      }
+                    )
+                  }
+                </Picker>
+
+              </Item>
+            )
+          }
+        >
+        </Field>
+      </View>
+    )
+  }
+
+  const render_bridge_form = (handleSubmit, form, submitting, pristine, values) => {
+    return (
+      <View>
+        <Field
+          name="staterange"
+          render={
+            props => (
+              <Item picker>
+                <Picker
+                  mode="dropdown"
+                  selectedValue={props.input.value}
+                  onValueChange={
+                    (value, position) => {
+                      props.input.onChange(value)
+                      form.change('subname', componentProps.bridgeFactory.getSubNames(componentProps.highway_name, value)[0]);
+                      // directionField.input.onChange(Direction_Data[Highway_Data.indexOf(value)][0]);                           
+                    }
+                  }
+                  iosIcon={<Icon name="ios-arrow-down" />}
+                  style={{ width: "90%" }}
+                  placeholder="桩号范围"
+                  placeholderStyle={{ color: "#bfc6ea" }}
+                  placeholderIconColor="#007aff">
+                  {
+                    componentProps.bridgeFactory.getStationRanges(componentProps.highway_name).map(
+                      (item, index) => {
+                        return <Picker.Item key={index} label={item} value={item} />
+                      }
+                    )
+                  }
+                </Picker>
+
+              </Item>
+            )
+          }
+        >
+
+        </Field>
+        <Field
+          name="subname"
+          render={
+            props => (
+              <Item picker>
+                <Picker
+                  mode="dropdown"
+                  selectedValue={props.input.value}
+                  onValueChange={
+                    (value, position) => {
+                      props.input.onChange(value)
+                    }
+
+                  }
+                  iosIcon={<Icon name="ios-arrow-down" />}
+                  style={{ width: "90%" }}
+                  placeholder="桥梁"
+                  placeholderStyle={{ color: "#bfc6ea" }}
+                  placeholderIconColor="#007aff">
+                  {
+                    componentProps.bridgeFactory.getSubNames(componentProps.highway_name, values.staterange).map(
+                      (item, index) => {
+                        return <Picker.Item key={index} label={item} value={item} />
+                      }
+                    )
+
+                  }
+                </Picker>
+              </Item>
+            )
+          }
+        ></Field>
+      </View>
+    )
+  }
+
+  const render_other_form = () => {
+    return (
+      <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+        {render_text_input('stationOther')}
+      </View>
+
+    );
   }
 
   const render_range_form = () => {
     return (
       <View>
-       <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-        <Text>K</Text>
-        {render_number_input('kilometer')}      
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <H2>+</H2>
+        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+          <Text>K</Text>
+          {render_number_input('kilometer')}
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <H2>+</H2>
+          </View>
+          {render_number_input('meter')}
         </View>
-        {render_number_input('meter')} 
-      </View>
-      <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-        <Text>至</Text>
-        {render_number_input('endkilometer')}      
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <H2>+</H2>
+        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+          <Text>至</Text>
+          {render_number_input('endkilometer')}
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <H2>+</H2>
+          </View>
+          {render_number_input('endmeter')}
         </View>
-        {render_number_input('endmeter')} 
-      </View>  
       </View>
-      
+
     );
   }
 
-  const render_station_form = () => {
+  const render_stake_form = () => {
     return (
       <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
         <Text>K</Text>
@@ -158,14 +316,21 @@ export const StationForm = (props: IProps) => {
   const render_content_form = (handleSubmit, form, submitting, pristine, values) => {
     const stationType: string = values.stationType;
     if (stationType === '道路桩号' || stationType === '联络线') {
-      return render_station_form()
-    } else if(stationType === '区间') {
+      return render_stake_form()
+    } else if (stationType === '区间') {
       return render_range_form()
+    } else if (stationType === '桥梁匝道') {
+      return render_bridge_form(handleSubmit, form, submitting, pristine, values)
+    } else if (stationType === '站区') {
+      return render_station_form()
+    }
+    else if (stationType === '其它') {
+      return render_other_form()
     }
   }
 
   const render_content = (handleSubmit, form, submitting, pristine, values) => {
-
+     
     return (
       <View padder style={styles.stationContainer}>
         <Field
@@ -201,62 +366,11 @@ export const StationForm = (props: IProps) => {
           }
         </Field>
         {render_content_form(handleSubmit, form, submitting, pristine, values)}
-        {/* <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-
-          <Text>K</Text>
-          <Field
-            name="kilometer"
-            validate={composeValidators(isRequired, mustBeNumber, isMinLength(1), isMaxLength(3))}
-            warn={composeValidators(mustBeNumber, isMinLength(1), isMaxLength(3))}
-          >
-            {
-              field => (
-                <View style={{ flex: 2 }}>
-
-
-                  <Item error={field.meta.error && field.meta.touched}>
-                    <Input
-                      keyboardType='numeric'
-                      {...field.input}
-                    />
-                    {field.meta.touched && field.meta.error && (
-                      <Text>{field.meta.error}</Text>
-                    )}
-                  </Item>
-                </View>
-              )
-            }
-          </Field>
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <H2>+</H2>
-          </View>
-          <Field
-            name="meter"
-            validate={composeValidators(isRequired, mustBeNumber, isMinLength(1), isMaxLength(3))}
-            warn={composeValidators(mustBeNumber, isMinLength(1), isMaxLength(3))}
-          >
-            {
-              field => (
-                <View style={{ flex: 2 }}>
-                  <Item error={field.meta.error && field.meta.touched}>
-                    <Input
-                      keyboardType='numeric'
-                      {...field.input}
-                    />
-                    {field.meta.touched && field.meta.error && (
-                      <Text>{field.meta.error}</Text>
-                    )}
-                  </Item>
-                </View>
-              )
-            }
-          </Field>
-        </View> */}
         <FormSpy
           subscription={{ values: true, valid: true }}
           onChange={(state) => {
             const { values, valid } = state
-            props.getData(values)
+            componentProps.getData(values)
           }} />
       </View>
     )
@@ -264,7 +378,7 @@ export const StationForm = (props: IProps) => {
 
   return (
     <Form
-      initialValues={{ stationType: '道路桩号', kilometer: '0', meter: '0' }}
+      initialValues={componentProps.initial_data}
       onSubmit={() => { }}
       decorators={[focusOnError]}
       render={

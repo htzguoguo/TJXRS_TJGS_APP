@@ -1,13 +1,26 @@
 import { getObjectArrayOrEmpty } from '../../utils/objectUtilis';
 import { IHighway } from './types';
 
-export class highwayFactory {
+export class HighwayFactory {
   private _name: string[];
   private _directions: {};
 
   constructor(data: IHighway, companyId: string) {
     this._name = getObjectArrayOrEmpty(data.num_names, companyId);
     this._directions = data.name_direction;
+  }
+
+  static getHighwayNowName(name: string): string {
+    if (name && name.length > 0) {
+      const strs = name.split('K');
+      if (strs && strs.length > 0) {
+        const tts = strs[0].split('_');
+        if (tts && tts.length > 1) {
+          return tts[1];
+        }
+      }
+    }
+    return '';
   }
 
   getDefaultName(): string {

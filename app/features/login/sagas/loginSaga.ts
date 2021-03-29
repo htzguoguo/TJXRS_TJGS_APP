@@ -18,7 +18,7 @@ export default function* loginAsync(action) {
   yield put(loaderActions.enableLoader());
   //how to call api
   const result: ILoginSagaCallResponse = yield call(loginUser, action.username, action.password);
-    console.log('login result', result);
+ 
   if (result.response && result.response.status === 200) {
     yield put(loginActions.onLoginResponse(result.response.data));
     yield put(loaderActions.disableLoader());

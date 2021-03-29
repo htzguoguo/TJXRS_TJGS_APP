@@ -41,7 +41,7 @@ const getObjectArrayOrEmpty = (col: Object | null | undefined, key: string): ISc
 }
 
 const getArrayFirstItemOrEmpty = (col: string[] | null | undefined) => {
-  console.log('getSetFirstItemOrEmpty', col);
+  
   if (col && col.length > 0) {
     return col[0];
   }
@@ -89,7 +89,7 @@ let focusOnError = createDecorator()
 export const DiseaseForm = (props: IProps) => {
   const windowWidth = Dimensions.get("window").width / 4;
   const workloads = useSelector(workloadSelector);
-  console.log('workloads', workloads);
+  
   const [selectedCategory, setSelectedCategory] = useState<string>(getArrayFirstItemOrEmpty(workloads.category));
 
   const [selectedSuboption, setSelectedSuboption] = useState(getObjectFirstItemOrEmpty(workloads.parent_category, selectedCategory));
@@ -97,7 +97,7 @@ export const DiseaseForm = (props: IProps) => {
   const [selectedInspection, setSelectedInspection] = useState(getObjectFirstItemOrEmpty(workloads.subname, `${selectedCategory}-${selectedSuboption}`));
 
   const [selectedDamage, setSelectedDamage] = useState(getObjectFirstItemOrEmpty(workloads.viewresult, `${selectedCategory}-${selectedSuboption}-${selectedInspection}`));
-  console.log('selectedCategory, selectedSuboption, selectedInspection, selectedDamage', selectedCategory, selectedSuboption, selectedInspection, selectedDamage);
+  
   const category_data = getArrayOrEmpty(workloads.category);
   const suboption_data = getObjectArrayOrEmpty(workloads.parent_category, selectedCategory);
   const inspection_data = getObjectArrayOrEmpty(workloads.subname, `${selectedCategory}-${selectedSuboption}`);
@@ -181,7 +181,7 @@ export const DiseaseForm = (props: IProps) => {
                 transparentItemRows={1}
                 initialSelectedIndex={0}
                 onScroll={({ index, item }) => {
-                  console.log('item', item);
+                
                   const cur_category = item.value;
                   const cur_suboption = getObjectFirstItemOrEmpty(workloads.parent_category, cur_category);
                   const cur_inspection = getObjectFirstItemOrEmpty(workloads.subname, `${cur_category}-${cur_suboption}`)

@@ -31,7 +31,7 @@ export const uploadFileReducer = createReducer(initialState, {
     };
   },
   [types.UPLOAD_FILE_DELETE](state: IUploadFilesState, action: IUploadFileResponseState,) {
-    console.log(action);
+ 
     const file = action.response;
     const files = state.files;
     const idx = files.findIndex(item => item.name === file.name)
@@ -41,7 +41,7 @@ export const uploadFileReducer = createReducer(initialState, {
     
     return {
       error: '',
-      files: [...files.splice(idx, 1)]
+      files: [...files]
     };
   },
 });

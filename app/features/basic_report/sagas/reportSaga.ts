@@ -16,10 +16,10 @@ export default function* createBasicReportAsync(action) {
   yield put(loaderActions.enableLoader());
   //how to call api
 
-  console.log('createBasicReportAsync action.entity', action.entity);
+ 
   const result  = yield call(createBasicReport, action.entity);
      
-     console.log('createBasicReportAsync result', result);
+ 
   if (result.response && result.response.status === 201) {
     yield put(reportActions.onCreateBasicReportResponse(result.response.data));
     yield put(loaderActions.disableLoader());

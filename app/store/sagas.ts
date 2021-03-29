@@ -9,6 +9,8 @@ import { workloadSagas } from './workload/sagas';
 import { highwaySagas } from './highway/sagas';
 import { basicReportSagas } from '../features/basic_report/sagas';
 import { uploadFileSagas } from './file/sagas';
+import {bridgeSagas} from './bridge/sagas';
+import {stationSagas} from './station/sagas';
 
 // export default [loginSaga];
 
@@ -19,5 +21,7 @@ export default function* rootSaga() {
     ...basicReportSagas,
     ...uploadFileSagas,
     ...highwaySagas,
+    ...bridgeSagas,
+    ...stationSagas,
   ]);
 }

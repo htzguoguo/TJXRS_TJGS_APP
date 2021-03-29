@@ -1,6 +1,6 @@
 import { IStoreState } from "../types";
-import { highwayFactory } from "./highwayFactory";
+import { HighwayFactory } from "./highwayFactory";
 
 export const highwaySelector = (state: IStoreState) => {
-  return new highwayFactory(state.highwayReducer.highway, state.loginReducer.user?.companyId!);
+  return new HighwayFactory(state.highwayReducer.highway, state.loginReducer.user?.companyId!);
 };

@@ -69,7 +69,7 @@ export async function RNFetchUploadFile(path, entity: IUploadFile) {
     return resp.json();
   })
   .catch((error) => {
-    console.log('RNFetchUploadFile error', error);
+    
     if (!error.response) {
       // network error
       error.response = {
@@ -107,14 +107,14 @@ export async function Api(path, data, method, type) {
     method: method,
     body: data,
   };
-  console.log(ApiConstants.API_BASE_URL + path, options);
+  
   return await fetch(ApiConstants.API_BASE_URL + path, options)
     .then((resp) => {
-      console.log(resp);
+     
       return resp.json();
     })
     .catch((error) => {
-      console.log('error', error);
+     
     });
 }
 

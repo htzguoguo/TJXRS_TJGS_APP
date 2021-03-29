@@ -3,7 +3,7 @@ import React, { useState } from "react"
 import { Field, Form, FormSpy, useField, useForm } from "react-final-form";
 import { StyleSheet } from "react-native";
 import WhenFieldChanges from "../../../components/WhenFieldChanges";
-import { highwayFactory } from "../../../store/highway/highwayFactory";
+import { HighwayFactory } from "../../../store/highway/highwayFactory";
 import basic_styles from '../styles';
 
 // import { Direction_Data, Highway_Data, Lands_Data, Weather_Data } from "./highway_data";
@@ -17,7 +17,7 @@ export interface IHighwaySelectorData {
 
 interface IProps {
   getData: (values) => void;
-  highway_data: highwayFactory;
+  highway_data: HighwayFactory;
   initial_data: IHighwaySelectorData;
   Lands_Data: string[];
   Weather_Data: string[];
@@ -64,7 +64,7 @@ export const HighwaySelector = (comProps: IProps) => {
     // const result = Direction_Data[Highway_Data.indexOf(values.name)];
     const result = comProps.highway_data.getDirection(values.name)
     // values.direction = result[0];
-    // console.log('render_direction', values);
+     
     return result.map(
       (item, index) => {
         return <Picker.Item key={index} label={item} value={item} />
@@ -220,7 +220,7 @@ export const HighwaySelector = (comProps: IProps) => {
           onChange={(state) => {
             const { values, valid } = state
             // setHighwayIndex(Highway_Data.indexOf(values.name))
-            // console.log(values);
+            
             // setSelectedData({...values});
             comProps.getData(values)
           }} />

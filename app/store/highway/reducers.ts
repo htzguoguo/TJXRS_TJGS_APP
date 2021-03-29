@@ -29,7 +29,7 @@ export const highwayReducer = createReducer(initialState, {
     state: IHighwayState,
     action: IHighwayQueryResponseState,
   ) {
-    console.log('WORKLOAD_QUERY_RESPONSE', action.response.data);
+ 
     const parsed = parseWorkload(action.response.data);
     return {
       ...state,
@@ -60,7 +60,7 @@ const parseWorkload = (highways: IHighwayItem[]) => {
   } catch (ex) {
     console.log(ex);
   }
-
+   
   return {
     num_names,
     name_direction,    

@@ -4,13 +4,18 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { createLogger } from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 
-import rootReducers from './reducers';  // where reducers is a object of reducers
+import rootReducers from './reducers'; // where reducers is a object of reducers
 import sagas from './sagas';
 
 const config = {
   key: 'root',
   storage: AsyncStorage,
-  blacklist: ['loadingReducer', 'basicReportReducer', 'uploadFileReducer'],
+  blacklist: [
+    'loadingReducer',
+    'basicReportReducer',
+    'uploadFileReducer',
+    'loginReducer',
+  ],
   debug: true, //to get useful logging
 };
 
@@ -28,9 +33,7 @@ const enhancers = [applyMiddleware(...middleware)];
 // const initialState = {};
 const persistConfig: any = { enhancers };
 const store = createStore(reducers, undefined, compose(...enhancers));
-const persistor = persistStore(store, persistConfig, () => {
-  //   console.log('Test', store.getState());
-});
+const persistor = persistStore(store, persistConfig, () => {});
 const configureStore = () => {
   return { persistor, store };
 };

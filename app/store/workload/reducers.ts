@@ -32,7 +32,7 @@ export const workloadReducer = createReducer(initialState, {
     state: IWorkloadState,
     action: IWorkloadQueryResponseState,
   ) {
-    console.log('WORKLOAD_QUERY_RESPONSE', action.response.data);
+ 
     const parsed = parseWorkload(action.response.data);
     return {
       ...state,

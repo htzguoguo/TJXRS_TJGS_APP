@@ -16,7 +16,7 @@ export default function* createUploadFileAsync(action) {
   yield put(loaderActions.enableLoader());
   //how to call api 
   const result  = yield call(uploadSingleFile, action.entity);     
- console.log('createUploadFileAsync', result);
+ 
   if (result.response && result.response.savedName) {
     yield put(uploadFileActions.onUploadFileResponse({...action.entity, ...result.response}));
     yield put(loaderActions.disableLoader());

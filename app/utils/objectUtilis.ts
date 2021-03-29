@@ -30,6 +30,20 @@ function addItemToMap<T>(key: string, value: T, col: Map<string, T[]>) {
   }
 }
 
+export function getObjectFirstItemOrEmpty (
+  col: Object | null | undefined,
+  key: string,
+): string  {
+  let result = '';
+  if (col && col.hasOwnProperty(key)) {
+    const arr = col[key];
+    if (arr && arr.length > 0) {
+      result = arr[0];
+    }
+  }
+  return result;
+};
+
 export const  getObjectArrayOrEmpty = (
   col: Object | null | undefined,
   key: string,

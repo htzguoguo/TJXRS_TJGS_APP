@@ -1,22 +1,22 @@
 import { put, call, select } from 'redux-saga/effects';
 
 import { Alert } from 'react-native';
-import { queryWorkload } from '../services/workload';
-import * as workloadActions from '../actions';
+import { queryBridge } from '../services/bridge';
+import * as bridgeActions from '../actions';
 import * as loaderActions from '../../../store/loader/actions';
-import { IWorkloadQuerySagaCallResponse } from './types';
+import { IBridgeQuerySagaCallResponse } from './types';
 
 // Our worker Saga that logins the user
-export default function* workloadQueryAsync(action) {
+export default function* bridgeQueryAsync(action) {
   yield put(loaderActions.enableLoader());
   //how to call api
-  const result: IWorkloadQuerySagaCallResponse = yield call(queryWorkload);
- 
+  const result: IBridgeQuerySagaCallResponse = yield call(queryBridge);
+
   if (result.response && result.response.status === 200) {
-    yield put(workloadActions.onQueryWorkloadsResponse(result.response.data));
+    yield put(bridgeActions.onQueryBridgeSubNameResponse(result.response.data));
     yield put(loaderActions.disableLoader());
   } else {
-    yield put(workloadActions.queryWorkloadsFailed(result.error.data.error));
+    yield put(bridgeActions.queryBridgeSubNameFailed(result.error.data.error));
     yield put(loaderActions.disableLoader());
     Alert.alert('提示：', result.error.data.error, [
       {
