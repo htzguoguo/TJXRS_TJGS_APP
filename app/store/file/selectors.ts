@@ -1,9 +1,9 @@
 import { IStoreState } from '../types';
-import { IUploadFileSuccessResponse } from './model';
+import { IUploadFile } from './model';
 
 export const tempImagesSelector = (
   state: IStoreState,
-): IUploadFileSuccessResponse[] =>
+): IUploadFile[] =>
   state.uploadFileReducer.files.filter(
     (file) =>
       file && file.savedName && file.type && file.type.startsWith('image'),
@@ -11,5 +11,5 @@ export const tempImagesSelector = (
 
 export const tempFilesSelector = (
   state: IStoreState,
-): IUploadFileSuccessResponse[] =>
+): IUploadFile[] =>
   state.uploadFileReducer.files.filter((file) => file && file.savedName);

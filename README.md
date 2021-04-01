@@ -2,6 +2,13 @@
 1. 在node_modules找到对应的文件夹；
 2. 添加 nestedScrollEnabled = {true}； 137 line.
 
+## 解决react-native-dynamically-selected-picker 设定值后滑动到对应的位置 line 23
+ scrollToPosition = (index) => {
+    this.scrollViewRef.scrollTo({
+      y: this.state.itemHeight * index,
+    });
+  };
+
 
 ## Error type 3. Activity class {com.awesome_project/ com.awesome_project.MainActivity} does not exist in react native (Android device)
 adb uninstall com.rnboilerplate

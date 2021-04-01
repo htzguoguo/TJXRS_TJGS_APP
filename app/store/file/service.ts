@@ -4,7 +4,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import { Api, apiClient, RNFetchUploadFile } from '../../api';
 import ApiConstants from '../../api/ApiConstants';
 import { IServerResponseFailure } from '../../api/types';
-import { IUploadFile, IUploadFileSuccessResponse } from './model';
+import { IUploadFile, } from './model';
 
 const PREFIX: string = 'files';
 
@@ -41,7 +41,7 @@ export function uploadSingleFile(entity: IUploadFile) {
 
   return apiClient
     .post(`${PREFIX}/upload/single`, data)
-    .then((response: AxiosResponse<IUploadFileSuccessResponse>) => ({
+    .then((response: AxiosResponse<IUploadFile>) => ({
       response,
     }))
     .catch((error: AxiosResponse<IServerResponseFailure>) => ({ error }));

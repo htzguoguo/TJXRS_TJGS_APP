@@ -1,82 +1,96 @@
 import React, { useCallback, useState } from 'react';
-import {
-  SafeAreaView,
-  Dimensions,
-  View,
-  Image,
-  TouchableWithoutFeedback,
-  ScrollView,
-  StatusBar,
-  Alert,
-  FlatList,
-  TouchableOpacity,
-} from 'react-native';
-import DynamicallySelectedPicker from 'react-native-dynamically-selected-picker';
+import { SafeAreaView, Dimensions, View } from 'react-native';
+
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {
-  launchCamera,
-  launchImageLibrary,
-  MediaType,
-} from 'react-native-image-picker';
+
 import {
   Container,
   Content,
-  Item,
-  Grid,
-  Row,
-  Accordion,
   Text,
   Icon,
   Footer,
-  FooterTab,
   Button,
-  Col,
-  Card,
-  CardItem,
-  Left,
-  Right,
-  Body,
   Picker,
   Header,
 } from 'native-base';
-import styles from './styles';
 import { IProps } from '../types';
 import { StandardHeader } from '../../../components/Header';
 import { HighwaySelector, IHighwaySelectorData } from '../components/Highway';
 import { IStationSelectorData, StationForm } from '../components/StationForm';
-import { DiseaseForm } from '../components/DiseaseForm_b';
+import { DiseaseForm, IDiseaseSelectorData } from '../components/DiseaseForm';
 import { useDispatch, useSelector } from 'react-redux';
-import { requestCreateBasicReport } from '../actions';
-import {
-  deleteUploadFile,
-  requestUploadFile,
-} from '../../../store/file/actions';
+import { requestCreateBasicReport, requestUpdateBasicReport } from '../actions';
+
 import { Field, FormSpy, Form } from 'react-final-form';
 import { report_data } from '../components/reports_data';
 import { ImageViewer } from '../components/ImageViewer';
 import { padNumber } from '../../../utils/stringUtils';
 import { tempFilesSelector } from '../../../store/file/selectors';
-import {
-  Direction_Data,
-  Highway_Data,
-  Lands_Data,
-  Weather_Data,
-} from '../components/highway_data';
+import { Lands_Data, Weather_Data } from '../components/highway_data';
 import { highwaySelector } from '../../../store/highway/selectors';
 import { getStationSummary } from '../helper';
 import { bridgeSelector } from '../../../store/bridge/selectors';
 import { stationSelector } from '../../../store/station/selectors';
+import { FooterForm } from '../components/FooterForm';
+import { ReportList } from '../components/ReportList';
+import { IReportBasicInfo } from '../model';
+import { replaceUploadFile } from '../../../store/file/actions';
+import { workloadSelector } from '../../../store/workload/selectors';
 
 function BasicReport(props: IProps) {
-  const windowWidth = Dimensions.get('window').width / 4;
+  const [
+    selectedEditItem,
+    setSelectedEditItem,
+  ] = useState<IReportBasicInfo | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const tempSelectedFiles = useSelector(tempFilesSelector);
+  const workloads = useSelector(workloadSelector);
   const highwayData = useSelector(highwaySelector);
   const bridgeFactory = useSelector(bridgeSelector);
   const stationFactory = useSelector(stationSelector);
-  const [selectedDiease, setSelectedDiease] = useState({});
+  const [selectedDiease, setSelectedDiease] = useState<IDiseaseSelectorData>(
+    () => {
+      const category = workloads.getDefaultCategory();
+      const suboption = workloads.getDefaultSuboption(category);
+      const inspection = workloads.getDefaultInspection(category, suboption);
+      const damage = workloads.getDefaultDamage(
+        category,
+        suboption,
+        inspection,
+      );
+      const defect = workloads.getDefaultDefect(
+        category,
+        suboption,
+        inspection,
+        damage,
+      );
+      return {
+        category,
+        suboption,
+        inspection,
+        damage,
+        defect,
+      };
+    },
+  );
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    selectedDiease.category,
+  );
+
+  const [selectedSuboption, setSelectedSuboption] = useState(
+    selectedDiease.suboption,
+  );
+
+  const [selectedInspection, setSelectedInspection] = useState(
+    selectedDiease.inspection,
+  );
+
+  const [selectedDamage, setSelectedDamage] = useState(selectedDiease.damage);
+
+  const [selectedDefect, setSelectedDefect] = useState(selectedDiease.defect);
+
   const [selectedReportDate, setSelectedReportDate] = useState({
-    report: report_data[0],
+    report: selectedEditItem ? selectedEditItem.report : report_data[0],
     date: new Date(),
   });
   const [selectedHighway, setSelectedHighway] = useState<IHighwaySelectorData>({
@@ -97,57 +111,115 @@ function BasicReport(props: IProps) {
     stationOther: '',
   });
   const dispatch = useDispatch();
+
   const onPostBasicReport = () => {
-    const files = tempSelectedFiles.map((item) => ({ ...item, base64: '' }));
-    dispatch(
-      requestCreateBasicReport({
-        ...selectedDiease,
-        ...selectedHighway,
-        ...selectedReportDate,
-        ...selectedStation,
-        files,
-      }),
-    );
+    //const files = tempSelectedFiles.map((item) => ({ ...item, base64: '' }));
+    const base = {
+      ...selectedHighway,
+      ...selectedReportDate,
+      ...selectedStation,
+      category: selectedCategory,
+      suboption: selectedSuboption,
+      inspection: selectedInspection,
+      damage: selectedDamage,
+      defect: selectedDefect,
+      files: tempSelectedFiles,
+    };
+    if (selectedEditItem && selectedEditItem.id) {
+      dispatch(
+        requestUpdateBasicReport({
+          id: selectedEditItem.id,
+          caseid: selectedEditItem.caseId,
+          ...base,
+        }),
+      );
+    } else {
+      dispatch(requestCreateBasicReport(base));
+    }
   };
 
-  const onDeleteUploadFile = (file) => {
-    dispatch(deleteUploadFile(file));
+  const onResetReport = () => {
+    
   };
+
+  const setSelectedEdit = useCallback((item: IReportBasicInfo) => {
+    console.log('setSelectedEdit', item);
+    setSelectedEditItem(item);
+    setSelectedReportDate({
+      report: item.report,
+      date: item.date,
+    });
+    setSelectedHighway({
+      weather: item.weather,
+      name: item.name,
+      direction: item.direction,
+      lane: item.lane,
+    });
+    setSelectedStation({
+      stationType: item.stationType,
+      kilometer: item.kilometer.toString(),
+      meter: item.meter.toString(),
+      endkilometer: item.endkilometer.toString(),
+      endmeter: item.endmeter.toString(),
+      station: item.station,
+      staterange: item.staterange,
+      subname: item.subname,
+      stationOther: item.stationOther,
+    });
+    setSelectedDiease({
+      category: item.category,
+      suboption: item.suboption,
+      inspection: item.inspection,
+      damage: item.damage,
+      defect: item.defect,
+    });
+    setSelectedCategory(item.category);
+    setSelectedSuboption(item.suboption);
+    setSelectedInspection(item.inspection);
+    setSelectedDamage(item.inspection);
+    setSelectedDefect(item.defect);
+    dispatch(replaceUploadFile(item.files));
+  }, []);
 
   const getHighwayData = useCallback((item) => {
- 
     setSelectedHighway(item);
-  
-    setSelectedStation({...selectedStation, station: stationFactory.getDefaultStation(item.name),
+
+    setSelectedStation({
+      ...selectedStation,
+      station: stationFactory.getDefaultStation(item.name),
       staterange: bridgeFactory.getDefaultStationRange(item.name),
-      subname: bridgeFactory.getDefaultSubName(item.name),})
+      subname: bridgeFactory.getDefaultSubName(item.name),
+    });
   }, []);
 
   const getReportDateData = useCallback((item) => {
- 
     setSelectedReportDate(item);
   }, []);
 
   const getDieaseData = useCallback((item) => {
-  
+    console.log('getDieaseData', item);
     setSelectedDiease(item);
   }, []);
 
   const getStationData = useCallback((item) => {
- 
     setSelectedStation(item);
   }, []);
 
   const saveReport = () => (
-    <Button transparent onPress={onPostBasicReport}>
-      <Text>保存</Text>
-    </Button>
+    <View style={{flexDirection: 'row'}}>
+      <Button transparent onPress={onResetReport}>
+        <Text>重置</Text>
+      </Button>
+      <Button transparent onPress={onPostBasicReport}>
+        <Text>保存</Text>
+      </Button>
+    </View>
   );
 
   const headerBody = () => (
     <Form
       initialValues={selectedReportDate}
-      onSubmit={() => { }}
+      onSubmit={() => {}}
       render={({ handleSubmit, form, submitting, pristine, values }) => (
         <View
           style={{
@@ -219,95 +291,12 @@ function BasicReport(props: IProps) {
     />
   );
 
-  const Image_Options = {
-    mediaType: 'photo',
-    quality: 0.5,
-    maxHeight: 2000,
-    maxWidth: 2000,
-    saveToPhotos: false,
-    includeBase64: true,
-  };
-
-  function selectImageFromLibrary() {
-    launchImageLibrary(Image_Options, (response) => {
-      
-      if (response.didCancel) {
-      } else if (response.errorCode) {
-        Alert.alert('提示', response.errorCode);
-      } else {
-       
-        dispatch(
-          requestUploadFile({
-            uri: response.uri!,
-            type: response.type!,
-            name: response.fileName!,
-            base64: response.base64!,
-            size: response.fileSize!,
-          }),
-        );
-      }
-    });
-  }
-
-  function takeImage() {
-    launchCamera(Image_Options, (response) => {
-   
-      if (response.didCancel) {
-      } else if (response.errorCode) {
-    
-        Alert.alert('提示', response.errorCode);
-      } else {
-    
-        dispatch(
-          requestUploadFile({
-            uri: response.uri!,
-            type: response.type!,
-            name: response.fileName!,
-            base64: response.base64!,
-            size: response.fileSize!,
-          }),
-        );
-      }
-    });
-  }
-
-  function takeVideo() {
-    const options = {
-      mediaType: 'video',
-      videoQuality: 'low',
-      durationLimit: 30,
-    };
-    launchCamera(options, (response) => {
-    
-      if (response.didCancel) {
-      } else if (response.errorCode) {
-     
-        Alert.alert('提示', response.errorCode);
-      } else {
-      
-        dispatch(
-          requestUploadFile({
-            uri: response.uri!,
-            type: response.type!,
-            name: response.fileName!,
-            base64: response.base64!,
-            size: response.fileSize!,
-          }),
-        );
-      }
-    });
-  }
-
   const getReportSummary = () => {
     const roadName = `${selectedHighway.weather},${selectedHighway.name},${selectedHighway.direction},${selectedHighway.lane}`;
     const station = getStationSummary(selectedStation);
     let defect = '';
-    if (
-      selectedDiease &&
-      selectedDiease.defect &&
-      selectedDiease.defect.length > 0
-    ) {
-      defect = `${selectedDiease.defect[0].dealwithdesc},${selectedDiease.defect[0].amount},${selectedDiease.defect[0].unit}`;
+    if (selectedDefect && selectedDefect.length > 0) {
+      defect = `${selectedDefect[0].dealwithdesc},${selectedDefect[0].amount},${selectedDefect[0].unit}`;
     }
     return `${roadName},${station},${defect}`;
   };
@@ -337,27 +326,25 @@ function BasicReport(props: IProps) {
             initial_data={selectedStation}
           />
           <ImageViewer />
-          <DiseaseForm getData={getDieaseData} />
+          <DiseaseForm
+            getData={getDieaseData}
+            workload_data={workloads}
+            initial_data={selectedDiease}
+            category={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            setSelectedSuboption={setSelectedSuboption}
+            setSelectedDamage={setSelectedDamage}
+            setSelectedInspection={setSelectedInspection}
+            setSelectedDefect={setSelectedDefect}
+            suboption={selectedSuboption}
+            inspection={selectedInspection}
+            damage={selectedDamage}
+            defect={selectedDefect}
+          />
+          <ReportList setSelected={setSelectedEdit} />
         </Content>
         <Footer>
-          <FooterTab>
-            <Button vertical onPress={selectImageFromLibrary}>
-              <Icon name="images-outline" />
-              <Text>相册</Text>
-            </Button>
-            <Button vertical>
-              <Icon name="mic-outline" />
-              <Text>录音</Text>
-            </Button>
-            <Button vertical onPress={takeVideo}>
-              <Icon active name="videocam-outline" />
-              <Text>视频</Text>
-            </Button>
-            <Button onPress={takeImage} vertical>
-              <Icon name="camera-outline" />
-              <Text>拍照</Text>
-            </Button>
-          </FooterTab>
+          <FooterForm />
         </Footer>
       </Container>
     </SafeAreaView>

@@ -30,18 +30,40 @@ export const uploadFileReducer = createReducer(initialState, {
       error,
     };
   },
-  [types.UPLOAD_FILE_DELETE](state: IUploadFilesState, action: IUploadFileResponseState,) {
- 
+  [types.UPLOAD_FILE_DELETE](
+    state: IUploadFilesState,
+    action: IUploadFileResponseState,
+  ) {
     const file = action.response;
     const files = state.files;
-    const idx = files.findIndex(item => item.name === file.name)
-    if(idx > -1) {
-      files.splice(idx, 1)
+    const idx = files.findIndex((item) => item.name === file.name);
+    if (idx > -1) {
+      files.splice(idx, 1);
     }
-    
+
     return {
       error: '',
-      files: [...files]
+      files: [...files],
+    };
+  },
+  [types.EMPTY_FILE](
+    state: IUploadFilesState,
+    action: IUploadFileResponseState,
+  ) {
+    return {
+      error: '',
+      files: [],
+    };
+  },
+  [types.REPLACE_FILE](
+    state: IUploadFilesState,
+    action: IUploadFileResponseState,
+
+  ) {
+    const files = action.response;
+    return {
+      error: '',
+      files: files,
     };
   },
 });

@@ -28,3 +28,16 @@ export function deleteUploadFile(entity: IUploadFile) {
     response: entity
   };
 }
+
+export function emptyUploadFile() {
+  return {
+    type: types.EMPTY_FILE,    
+  };
+}
+
+export function replaceUploadFile(entites: IUploadFile[]) {
+  return {
+    type: types.REPLACE_FILE,   
+    response: entites 
+  };
+}

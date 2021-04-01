@@ -11,3 +11,10 @@ export function createBasicReport(entity) {
     .catch((error: AxiosResponse<IServerResponseFailure>) => ({ error }));
 }
 
+export function updateBasicReport(entity) {
+  return apiClient
+    .put(`/${PREFIX}`, entity)
+    .then((response: AxiosResponse) => ({ response }))
+    .catch((error: AxiosResponse<IServerResponseFailure>) => ({ error }));
+}
+
