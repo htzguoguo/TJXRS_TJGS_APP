@@ -1,24 +1,49 @@
+import { IDiseaseSelectorData } from '../../features/basic_report/components/DiseaseForm';
 import { IScrollPickerItem } from '../../features/basic_report/types';
 import { IWorkloadItem } from './models';
 import { IRoadDefect, IWorkload } from './types';
 
 export class WorkloadFactory {
   private _workload: IWorkload;
+  public initial_data: IDiseaseSelectorData;
 
   constructor(data: IWorkload) {
     this._workload = data;
+
+    const category = this.getDefaultCategory();
+    const suboption = this.getDefaultSuboption(category);
+    const inspection = this.getDefaultInspection(category, suboption);
+    const damage = this.getDefaultDamage(category, suboption, inspection);
+    const defect = this.getDefaultDefect(
+      category,
+      suboption,
+      inspection,
+      damage,
+    );
+    this.initial_data =  {
+      category,
+      suboption,
+      inspection,
+      damage,
+      defect,
+    };
   }
 
+  
+
   public getDefaultCategory() {
-    return this.getArrayFirstItemOrEmpty(this._workload.category)
+    return this.getArrayFirstItemOrEmpty(this._workload.category);
   }
 
   public getCategory() {
-    return this.getArrayOrEmpty(this._workload.category)
+    return this.getArrayOrEmpty(this._workload.category);
   }
 
   public getDefaultSuboption(category: string) {
-    return this.getObjectFirstItemOrEmpty(this._workload.parent_category, category)
+    return this.getObjectFirstItemOrEmpty(
+      this._workload.parent_category,
+      category,
+    );
   }
 
   public getsuboption(category: string) {
@@ -26,24 +51,48 @@ export class WorkloadFactory {
   }
 
   public getDefaultInspection(category: string, suboption: string) {
-    return this.getObjectFirstItemOrEmpty(this._workload.subname, `${category}-${suboption}`)
-  } 
+    return this.getObjectFirstItemOrEmpty(
+      this._workload.subname,
+      `${category}-${suboption}`,
+    );
+  }
 
   public getInspection(category: string, suboption: string) {
-    return this.getObjectArrayOrEmpty(this._workload.subname, `${category}-${suboption}`)
-  } 
+    return this.getObjectArrayOrEmpty(
+      this._workload.subname,
+      `${category}-${suboption}`,
+    );
+  }
 
-  public getDefaultDamage(category: string, suboption: string, inspection: string) {
-    return this.getObjectFirstItemOrEmpty(this._workload.viewresult, `${category}-${suboption}-${inspection}`)
-  } 
+  public getDefaultDamage(
+    category: string,
+    suboption: string,
+    inspection: string,
+  ) {
+    return this.getObjectFirstItemOrEmpty(
+      this._workload.viewresult,
+      `${category}-${suboption}-${inspection}`,
+    );
+  }
 
   public getDamage(category: string, suboption: string, inspection: string) {
-    return this.getObjectArrayOrEmpty(this._workload.viewresult, `${category}-${suboption}-${inspection}`)
-  } 
+    return this.getObjectArrayOrEmpty(
+      this._workload.viewresult,
+      `${category}-${suboption}-${inspection}`,
+    );
+  }
 
-  public getDefaultDefect(category: string, suboption: string, inspection: string, damage: string) {
-    return this.getDefectArrayOrEmpty(this._workload.dealwith, `${category}-${suboption}-${inspection}-${damage}`)
-  } 
+  public getDefaultDefect(
+    category: string,
+    suboption: string,
+    inspection: string,
+    damage: string,
+  ) {
+    return this.getDefectArrayOrEmpty(
+      this._workload.dealwith,
+      `${category}-${suboption}-${inspection}-${damage}`,
+    );
+  }
 
   private getObjectFirstItemOrEmpty = (
     col: Object | null | undefined,

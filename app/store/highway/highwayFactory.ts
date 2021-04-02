@@ -1,13 +1,22 @@
+import { Lands_Data, Weather_Data } from '../../features/basic_report/components/highway_data';
 import { getObjectArrayOrEmpty } from '../../utils/objectUtilis';
 import { IHighway } from './types';
 
 export class HighwayFactory {
   private _name: string[];
   private _directions: {};
+  public initial_data;
 
   constructor(data: IHighway, companyId: string) {
     this._name = getObjectArrayOrEmpty(data.num_names, companyId);
     this._directions = data.name_direction;
+
+    this.initial_data = {
+      weather: Weather_Data[0],
+      name: this.getDefaultName(),
+      direction: this.getDefaultDirection(),
+      lane: Lands_Data[0],
+    }
   }
 
   static getHighwayNowName(name: string): string {

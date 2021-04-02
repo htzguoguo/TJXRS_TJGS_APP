@@ -22,9 +22,8 @@ export interface IDiseaseSelectorData {
   damage: string;
   defect: IRoadDefect[];
 }
-interface IProps {
-  getData: (values: {}) => void;
-  initial_data: IDiseaseSelectorData;
+interface IProps { 
+  //initial_data: IDiseaseSelectorData;
   workload_data: WorkloadFactory;
   category: string;
   suboption: string;
@@ -50,7 +49,7 @@ export const DiseaseForm = (comProps: IProps) => {
   //const workloads = useSelector(workloadSelector);
   const workloads = comProps.workload_data;
 
-  const initial_data = comProps.initial_data;
+  //const initial_data = comProps.initial_data;
   // const [selectedCategory, setSelectedCategory] = useState<string>(comProps.initial_data.category);
 
   // const [selectedSuboption, setSelectedSuboption] = useState(comProps.initial_data.suboption);
@@ -92,7 +91,7 @@ export const DiseaseForm = (comProps: IProps) => {
       const inspection_index = inspection_data.findIndex(item => item.value === comProps.inspection);
       inspectionEl.current.scrollToPosition(inspection_index);
     },
-    [comProps.category, comProps.suboption, comProps.initial_data.inspection]
+    [comProps.category, comProps.suboption, comProps.inspection]
   )
 
   useEffect(
@@ -104,7 +103,7 @@ export const DiseaseForm = (comProps: IProps) => {
       const damage_index = damage_data.findIndex(item => item.value === comProps.damage);
       damageEl.current.scrollToPosition(damage_index);
     },
-    [comProps.category, comProps.suboption, comProps.initial_data.inspection, comProps.damage]
+    [comProps.category, comProps.suboption, comProps.inspection, comProps.damage]
   )
 
   // useEffect(
@@ -298,9 +297,9 @@ export const DiseaseForm = (comProps: IProps) => {
   return (
     <Form
       initialValues={{
-        category: initial_data.category, suboption: initial_data.suboption,
-        inspection: initial_data.inspection, damage: initial_data.damage,
-        defect: initial_data.defect, length: 0, width: 0, depth: 0, amount: 0
+        category: comProps.category, suboption: comProps.suboption,
+        inspection: comProps.inspection, damage: comProps.damage,
+        defect: comProps.defect, length: 0, width: 0, depth: 0, amount: 0
 
       }}
       onSubmit={() => { }}

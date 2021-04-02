@@ -34,8 +34,13 @@ import { stationSelector } from '../../../store/station/selectors';
 import { FooterForm } from '../components/FooterForm';
 import { ReportList } from '../components/ReportList';
 import { IReportBasicInfo } from '../model';
-import { replaceUploadFile } from '../../../store/file/actions';
+import { emptyUploadFile, replaceUploadFile } from '../../../store/file/actions';
 import { workloadSelector } from '../../../store/workload/selectors';
+
+const initial_data_report = {
+  report: report_data[0],
+  date: new Date(),
+}
 
 function BasicReport(props: IProps) {
   const [
@@ -48,67 +53,52 @@ function BasicReport(props: IProps) {
   const highwayData = useSelector(highwaySelector);
   const bridgeFactory = useSelector(bridgeSelector);
   const stationFactory = useSelector(stationSelector);
-  const [selectedDiease, setSelectedDiease] = useState<IDiseaseSelectorData>(
-    () => {
-      const category = workloads.getDefaultCategory();
-      const suboption = workloads.getDefaultSuboption(category);
-      const inspection = workloads.getDefaultInspection(category, suboption);
-      const damage = workloads.getDefaultDamage(
-        category,
-        suboption,
-        inspection,
-      );
-      const defect = workloads.getDefaultDefect(
-        category,
-        suboption,
-        inspection,
-        damage,
-      );
-      return {
-        category,
-        suboption,
-        inspection,
-        damage,
-        defect,
-      };
-    },
-  );
+  // const [selectedDiease, setSelectedDiease] = useState<IDiseaseSelectorData>(
+  //   () => {
+  //     const category = workloads.getDefaultCategory();
+  //     const suboption = workloads.getDefaultSuboption(category);
+  //     const inspection = workloads.getDefaultInspection(category, suboption);
+  //     const damage = workloads.getDefaultDamage(
+  //       category,
+  //       suboption,
+  //       inspection,
+  //     );
+  //     const defect = workloads.getDefaultDefect(
+  //       category,
+  //       suboption,
+  //       inspection,
+  //       damage,
+  //     );
+  //     return {
+  //       category,
+  //       suboption,
+  //       inspection,
+  //       damage,
+  //       defect,
+  //     };
+  //   },
+  // );
   const [selectedCategory, setSelectedCategory] = useState<string>(
-    selectedDiease.category,
+    workloads.initial_data.category,
   );
 
   const [selectedSuboption, setSelectedSuboption] = useState(
-    selectedDiease.suboption,
+    workloads.initial_data.suboption,
   );
 
   const [selectedInspection, setSelectedInspection] = useState(
-    selectedDiease.inspection,
+    workloads.initial_data.inspection,
   );
 
-  const [selectedDamage, setSelectedDamage] = useState(selectedDiease.damage);
+  const [selectedDamage, setSelectedDamage] = useState(workloads.initial_data.damage);
 
-  const [selectedDefect, setSelectedDefect] = useState(selectedDiease.defect);
+  const [selectedDefect, setSelectedDefect] = useState(workloads.initial_data.defect);
 
-  const [selectedReportDate, setSelectedReportDate] = useState({
-    report: selectedEditItem ? selectedEditItem.report : report_data[0],
-    date: new Date(),
-  });
-  const [selectedHighway, setSelectedHighway] = useState<IHighwaySelectorData>({
-    weather: Weather_Data[0],
-    name: highwayData.getDefaultName(),
-    direction: highwayData.getDefaultDirection(),
-    lane: Lands_Data[0],
-  });
+  const [selectedReportDate, setSelectedReportDate] = useState(initial_data_report);
+  const [selectedHighway, setSelectedHighway] = useState<IHighwaySelectorData>(highwayData.initial_data);
   const [selectedStation, setSelectedStation] = useState<IStationSelectorData>({
-    stationType: '道路桩号',
-    kilometer: '0',
-    meter: '0',
-    endkilometer: '0',
-    endmeter: '0',
-    station: stationFactory.getDefaultStation(selectedHighway.name),
-    staterange: bridgeFactory.getDefaultStationRange(selectedHighway.name),
-    subname: bridgeFactory.getDefaultSubName(selectedHighway.name),
-    stationOther: '',
+    ...stationFactory.getDefaultData(selectedHighway.name),
+    ...bridgeFactory.getDefaultData(selectedHighway.name),
   });
   const dispatch = useDispatch();
 
@@ -139,11 +129,22 @@ function BasicReport(props: IProps) {
   };
 
   const onResetReport = () => {
-    
+    setSelectedReportDate(initial_data_report);
+    setSelectedHighway(highwayData.initial_data)
+    setSelectedStation({
+      ...stationFactory.getDefaultData(selectedHighway.name),
+      ...bridgeFactory.getDefaultData(selectedHighway.name),
+    })
+
+    setSelectedCategory(workloads.initial_data.category);
+    setSelectedSuboption(workloads.initial_data.suboption);
+    setSelectedInspection(workloads.initial_data.inspection);
+    setSelectedDamage(workloads.initial_data.inspection);
+    setSelectedDefect(workloads.initial_data.defect);
+    dispatch(emptyUploadFile());
   };
 
-  const setSelectedEdit = useCallback((item: IReportBasicInfo) => {
-    console.log('setSelectedEdit', item);
+  const setSelectedEdit = useCallback((item: IReportBasicInfo) => {     
     setSelectedEditItem(item);
     setSelectedReportDate({
       report: item.report,
@@ -166,13 +167,13 @@ function BasicReport(props: IProps) {
       subname: item.subname,
       stationOther: item.stationOther,
     });
-    setSelectedDiease({
-      category: item.category,
-      suboption: item.suboption,
-      inspection: item.inspection,
-      damage: item.damage,
-      defect: item.defect,
-    });
+    // setSelectedDiease({
+    //   category: item.category,
+    //   suboption: item.suboption,
+    //   inspection: item.inspection,
+    //   damage: item.damage,
+    //   defect: item.defect,
+    // });
     setSelectedCategory(item.category);
     setSelectedSuboption(item.suboption);
     setSelectedInspection(item.inspection);
@@ -194,19 +195,14 @@ function BasicReport(props: IProps) {
 
   const getReportDateData = useCallback((item) => {
     setSelectedReportDate(item);
-  }, []);
-
-  const getDieaseData = useCallback((item) => {
-    console.log('getDieaseData', item);
-    setSelectedDiease(item);
-  }, []);
+  }, []);  
 
   const getStationData = useCallback((item) => {
     setSelectedStation(item);
   }, []);
 
   const saveReport = () => (
-    <View style={{flexDirection: 'row'}}>
+    <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
       <Button transparent onPress={onResetReport}>
         <Text>重置</Text>
       </Button>
@@ -326,10 +322,9 @@ function BasicReport(props: IProps) {
             initial_data={selectedStation}
           />
           <ImageViewer />
-          <DiseaseForm
-            getData={getDieaseData}
+          <DiseaseForm            
             workload_data={workloads}
-            initial_data={selectedDiease}
+            // initial_data={selectedDiease}
             category={selectedCategory}
             setSelectedCategory={setSelectedCategory}
             setSelectedSuboption={setSelectedSuboption}
