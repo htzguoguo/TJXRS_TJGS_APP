@@ -18,8 +18,7 @@ export interface IHighwaySelectorData {
 interface IProps {
   getData: (values) => void;
   highway_data: HighwayFactory;
-  initial_data: IHighwaySelectorData;
-  Lands_Data: string[];
+  initial_data: IHighwaySelectorData;  
   Weather_Data: string[];
 }
 
@@ -41,7 +40,7 @@ export const HighwaySelector = (comProps: IProps) => {
         }}>
 
         <Text  style={{ fontWeight: "600" }}>
-          {`${values.weather}，${values.name.substring(0, 6)},${values.direction},${values.lane}`}
+          {`${values.weather}，${values.name.substring(0, 6)},${values.direction}`}
         </Text>
         {expanded ? (
           <Icon
@@ -178,7 +177,7 @@ export const HighwaySelector = (comProps: IProps) => {
 
 
         </Field>
-        <Field
+        {/* <Field
           name="lane"
           render={
             props => (
@@ -209,7 +208,7 @@ export const HighwaySelector = (comProps: IProps) => {
             )
           }
         >
-        </Field>
+        </Field> */}
         {/* <WhenFieldChanges
                   field='name'
                   set='direction'

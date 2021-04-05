@@ -52,7 +52,7 @@ const parseWorkload = (highways: IHighwayItem[]) => {
   try {
     for (let i = 0; i < highways.length; i++) {
       const w = highways[i];
-      const name = `${w.RouteNumber}_${w.NowRouteName}${w.SectionStartStake}${w.SectionEndStake}`;
+      const name = `${w.RouteNumber}_${w.NowRouteName}${w.SectionStartStake}-${w.SectionEndStake}`;
       addUniqueValueToObject(num_names, name, w.CompanyID.toString());
       addUniqueValueToObject(name_direction, w.UpLink, name);
       addUniqueValueToObject(name_direction, w.DownLink, name);

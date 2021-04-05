@@ -1,6 +1,6 @@
 import { IStationSelectorData } from "./components/StationForm";
 
-export function getStationSummary(data: IStationSelectorData): string {
+export function getStationSummary(data: IStationSelectorData, isPrefix: boolean = true): string {
   const stationType: string = data.stationType;
   let value= '';
     if (stationType === '道路桩号' || stationType === '联络线') {
@@ -15,7 +15,10 @@ export function getStationSummary(data: IStationSelectorData): string {
     else if (stationType === '其它') {
       value = `${data.stationOther}`;
     }
-    return `${stationType}:${value}`
+    if(isPrefix) {
+return `${stationType}:${value}`
+    }
+    return `${value}`
 }
 
 

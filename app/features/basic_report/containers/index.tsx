@@ -36,6 +36,7 @@ import { ReportList } from '../components/ReportList';
 import { IReportBasicInfo } from '../model';
 import { emptyUploadFile, replaceUploadFile } from '../../../store/file/actions';
 import { workloadSelector } from '../../../store/workload/selectors';
+import { LaneForm } from '../components/LaneForm';
 
 const initial_data_report = {
   report: report_data[0],
@@ -53,31 +54,7 @@ function BasicReport(props: IProps) {
   const highwayData = useSelector(highwaySelector);
   const bridgeFactory = useSelector(bridgeSelector);
   const stationFactory = useSelector(stationSelector);
-  // const [selectedDiease, setSelectedDiease] = useState<IDiseaseSelectorData>(
-  //   () => {
-  //     const category = workloads.getDefaultCategory();
-  //     const suboption = workloads.getDefaultSuboption(category);
-  //     const inspection = workloads.getDefaultInspection(category, suboption);
-  //     const damage = workloads.getDefaultDamage(
-  //       category,
-  //       suboption,
-  //       inspection,
-  //     );
-  //     const defect = workloads.getDefaultDefect(
-  //       category,
-  //       suboption,
-  //       inspection,
-  //       damage,
-  //     );
-  //     return {
-  //       category,
-  //       suboption,
-  //       inspection,
-  //       damage,
-  //       defect,
-  //     };
-  //   },
-  // );
+  
   const [selectedCategory, setSelectedCategory] = useState<string>(
     workloads.initial_data.category,
   );
@@ -100,6 +77,8 @@ function BasicReport(props: IProps) {
     ...stationFactory.getDefaultData(selectedHighway.name),
     ...bridgeFactory.getDefaultData(selectedHighway.name),
   });
+  const [selectedLane, setSelectedLane] = useState<string>(highwayData.initial_data.lane);
+
   const dispatch = useDispatch();
 
   const onPostBasicReport = () => {
@@ -108,6 +87,7 @@ function BasicReport(props: IProps) {
       ...selectedHighway,
       ...selectedReportDate,
       ...selectedStation,
+      lane: selectedLane,
       category: selectedCategory,
       suboption: selectedSuboption,
       inspection: selectedInspection,
@@ -135,6 +115,7 @@ function BasicReport(props: IProps) {
       ...stationFactory.getDefaultData(selectedHighway.name),
       ...bridgeFactory.getDefaultData(selectedHighway.name),
     })
+    setSelectedLane(highwayData.initial_data.lane);
 
     setSelectedCategory(workloads.initial_data.category);
     setSelectedSuboption(workloads.initial_data.suboption);
@@ -156,6 +137,7 @@ function BasicReport(props: IProps) {
       direction: item.direction,
       lane: item.lane,
     });
+    setSelectedLane(item.lane);
     setSelectedStation({
       stationType: item.stationType,
       kilometer: item.kilometer.toString(),
@@ -201,13 +183,17 @@ function BasicReport(props: IProps) {
     setSelectedStation(item);
   }, []);
 
+  const getLaneData = useCallback((item) => {
+    setSelectedLane(item);
+  }, []);
+
   const saveReport = () => (
-    <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+    <View style={{flexDirection: 'row',  }}>
       <Button transparent onPress={onResetReport}>
         <Text>重置</Text>
       </Button>
       <Button transparent onPress={onPostBasicReport}>
-        <Text>保存</Text>
+        <Text>上报</Text>
       </Button>
     </View>
   );
@@ -288,8 +274,8 @@ function BasicReport(props: IProps) {
   );
 
   const getReportSummary = () => {
-    const roadName = `${selectedHighway.weather},${selectedHighway.name},${selectedHighway.direction},${selectedHighway.lane}`;
-    const station = getStationSummary(selectedStation);
+    const roadName = `${selectedHighway.weather},${selectedHighway.name},${selectedHighway.direction},${selectedLane}`;
+    const station = getStationSummary(selectedStation, false);
     let defect = '';
     if (selectedDefect && selectedDefect.length > 0) {
       defect = `${selectedDefect[0].dealwithdesc},${selectedDefect[0].amount},${selectedDefect[0].unit}`;
@@ -301,9 +287,9 @@ function BasicReport(props: IProps) {
     <SafeAreaView style={{ flex: 1 }}>
       <Container>
         <StandardHeader isHome={true} body={headerBody} right={saveReport} />
-        <Header>
+        <Header   >
           <Button transparent>
-            <Text>{getReportSummary()}</Text>
+            <Text  >{getReportSummary()}</Text>
           </Button>
         </Header>
         <Content style={{ padding: 1, backgroundColor: '#f4f4f4' }}>
@@ -314,6 +300,7 @@ function BasicReport(props: IProps) {
             Lands_Data={Lands_Data}
             Weather_Data={Weather_Data}
           />
+          <LaneForm setData={getLaneData} initial_data={selectedLane}  Lands_Data={Lands_Data}/>
           <StationForm
             bridgeFactory={bridgeFactory}
             stationFactory={stationFactory}
