@@ -57,5 +57,29 @@ export const basicReportReducer = createReducer(initialState, {
       error,
     };
   },
+
+  [types.DELETE_BASIC_REPORT_REQUEST](state: IBasicReportState) {
+    return {
+      ...state,
+    };
+  },
+  [types.DELETE_BASIC_REPORT_RESPONSE](
+    state: IBasicReportState,
+    action,
+  ) {
+    const entity = action.entity;    
+    const idx = state.reports.findIndex(item => item.caseId === entity.caseId)
+    state.reports.splice(idx, 1)
+    return {
+      reports: [...state.reports],
+      error: '',
+    };
+  },
+  [types.DELETE_BASIC_REPORT_FAILED](state: IBasicReportState, error: string) {
+    return {
+      ...state,
+      error,
+    };
+  },
 });
 

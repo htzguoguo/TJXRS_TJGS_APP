@@ -43,3 +43,25 @@ export function onUpdateBasicReportResponse(entity, response) {
     response,
   };
 }
+
+export function requestDeleteBasicReport(entity) {
+  return {
+    type: types.DELETE_BASIC_REPORT_REQUEST,
+    entity
+  };
+}
+
+export function deleteBasicReportFailed(error: string) {
+  return {
+    type: types.DELETE_BASIC_REPORT_FAILED,
+    error
+  };
+}
+
+export function onDeleteBasicReportResponse(entity, response) {
+  return {
+    type: types.DELETE_BASIC_REPORT_RESPONSE,
+    entity,
+    response,
+  };
+}

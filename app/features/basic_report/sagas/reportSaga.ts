@@ -8,7 +8,7 @@ import { AxiosResponse } from 'axios';
 import { put, call, select } from 'redux-saga/effects';
 
 import { Alert } from 'react-native';
-import { createBasicReport, updateBasicReport } from '../service';
+import { createBasicReport, deleteBasicReport, updateBasicReport } from '../service';
 import * as reportActions from '../actions';
 import * as loaderActions from '../../../store/loader/actions';
 
@@ -68,7 +68,7 @@ export function* updateBasicReportAsync(action) {
       ),
     );
     yield put(loaderActions.disableLoader());
-    Alert.alert('提示：', `编号[${action.entity.caseid}]修改成功`, [
+    Alert.alert('提示：', `编号[${action.entity.caseId}]修改成功`, [
       {
         text: '关闭',
         style: 'cancel',
@@ -78,6 +78,40 @@ export function* updateBasicReportAsync(action) {
     //yield call(navigationActions.navigateToHome);
   } else {
     yield put(reportActions.UpdateBasicReportFailed(result.error.data.error));
+    yield put(loaderActions.disableLoader());   
+    Alert.alert('提示：', result.error.data.error, [
+      {
+        text: '关闭',
+        style: 'cancel',
+      },
+    ]);
+  }
+}
+
+export function* deleteBasicReportAsync(action) {
+  yield put(loaderActions.enableLoader());
+  //how to call api  
+  console.log(action);
+  const result = yield call(deleteBasicReport, action.entity.id);
+  console.log('deleteBasicReportAsync', result);
+  if (result.response && result.response.status === 200) {
+    yield put(
+      reportActions.onDeleteBasicReportResponse(
+        action.entity,
+        result.response.data,
+      ),
+    );
+    yield put(loaderActions.disableLoader());
+    Alert.alert('提示：', `编号[${action.entity.caseId}]删除成功`, [
+      {
+        text: '关闭',
+        style: 'cancel',
+      },
+    ]);
+    // no need to call navigate as this is handled by redux store with SwitchNavigator
+    //yield call(navigationActions.navigateToHome);
+  } else {
+    yield put(reportActions.deleteBasicReportFailed(result.error.data.error));
     yield put(loaderActions.disableLoader());   
     Alert.alert('提示：', result.error.data.error, [
       {

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { SafeAreaView, Dimensions, View } from 'react-native';
+import { SafeAreaView, Dimensions, View, Alert } from 'react-native';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -189,10 +189,47 @@ function BasicReport(props: IProps) {
 
   const saveReport = () => (
     <View style={{flexDirection: 'row',  }}>
-      <Button transparent onPress={onResetReport}>
+      <Button transparent onPress={
+        () => {
+          Alert.alert(
+            "提示",
+            `确定要清除输入内容?`,
+            [
+              {
+                text: "取消",               
+                style: "cancel"
+              },
+              {
+                text: "确定", onPress: () => {
+                  onResetReport();                   
+                }
+              }
+            ]
+          );
+        }
+      }>
         <Text>重置</Text>
       </Button>
-      <Button transparent onPress={onPostBasicReport}>
+      <Button transparent onPress={
+        () => {
+          Alert.alert(
+            "提示",
+            `确定要上报记录?`,
+            [
+              {
+                text: "取消",               
+                style: "cancel"
+              },
+              {
+                text: "确定", onPress: () => {
+                  onPostBasicReport();                   
+                }
+              }
+            ]
+          );
+        }
+        
+        }>
         <Text>上报</Text>
       </Button>
     </View>
@@ -244,7 +281,7 @@ function BasicReport(props: IProps) {
                   onPress={() => setShowDatePicker(true)}>
                   <Text>{`${values.date.getFullYear()}${padNumber(
                     values.date.getMonth() + 1,
-                  )}${values.date.getDate()}`}</Text>
+                  )}${padNumber(values.date.getDate())}`}</Text>
                 </Button>
                 {showDatePicker && (
                   <DateTimePicker

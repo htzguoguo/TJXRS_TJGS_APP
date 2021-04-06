@@ -18,3 +18,10 @@ export function updateBasicReport(entity) {
     .catch((error: AxiosResponse<IServerResponseFailure>) => ({ error }));
 }
 
+export function deleteBasicReport(id) {
+  return apiClient
+    .delete(`/${PREFIX}/${id}`)
+    .then((response: AxiosResponse) => ({ response }))
+    .catch((error: AxiosResponse<IServerResponseFailure>) => ({ error }));
+}
+
