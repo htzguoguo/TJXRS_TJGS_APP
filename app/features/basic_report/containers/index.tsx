@@ -25,7 +25,7 @@ import {
 } from '../components/StationLaneForm';
 import { DiseaseForm, IDiseaseSelectorData } from '../components/DiseaseForm';
 import { useDispatch, useSelector } from 'react-redux';
-import { requestCreateBasicReport, requestUpdateBasicReport } from '../actions';
+import { nullEditReport, requestCreateBasicReport, requestUpdateBasicReport, setEditReport } from '../actions';
 
 import { Field, FormSpy, Form } from 'react-final-form';
 import { report_data } from '../components/reports_data';
@@ -47,6 +47,7 @@ import {
 import { workloadSelector } from '../../../store/workload/selectors';
 import { LaneForm } from '../components/LaneForm';
 import { ReporterSelector } from '../components/ReportDate';
+import { editReportSelector } from '../selectors';
 
 const initial_data_report = {
   report: report_data[0],
@@ -55,12 +56,14 @@ const initial_data_report = {
 };
 
 function BasicReport(props: IProps) {
-  const [
-    selectedEditItem,
-    setSelectedEditItem,
-  ] = useState<IReportBasicInfo | null>(null);
+  // const [
+  //   selectedEditItem,
+  //   setSelectedEditItem,
+  // ] = useState<IReportBasicInfo | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const tempSelectedFiles = useSelector(tempFilesSelector);
+
+  const selectedEditItem = useSelector(editReportSelector);
   const workloads = useSelector(workloadSelector);
   const highwayData = useSelector(highwaySelector);
   const bridgeFactory = useSelector(bridgeSelector);
@@ -102,13 +105,13 @@ function BasicReport(props: IProps) {
 
   const dispatch = useDispatch();
 
-  const onPostBasicReport = () => {
-    //const files = tempSelectedFiles.map((item) => ({ ...item, base64: '' }));
+  const onPostBasicReport = async () => {   
     const base = {
       ...selectedHighway,
       ...selectedReportDate,
       ...selectedStation,
       lane: selectedLane,
+     
       category: selectedCategory,
       suboption: selectedSuboption,
       inspection: selectedInspection,
@@ -130,7 +133,8 @@ function BasicReport(props: IProps) {
   };
 
   const onResetReport = () => {
-    setSelectedEditItem(null);
+    //setSelectedEditItem(null);
+
     setSelectedReportDate(initial_data_report);
     setSelectedHighway(highwayData.initial_data);
     setSelectedStation({
@@ -145,10 +149,12 @@ function BasicReport(props: IProps) {
     setSelectedDamage(workloads.initial_data.inspection);
     setSelectedDefect(workloads.initial_data.defect);
     dispatch(emptyUploadFile());
+    dispatch(nullEditReport());
   };
 
   const setSelectedEdit = useCallback((item: IReportBasicInfo) => {
-    setSelectedEditItem(item);
+    dispatch(setEditReport(item));
+   // setSelectedEditItem(item);
     setSelectedReportDate({
       report: item.report,
       date: item.date,
@@ -253,83 +259,6 @@ function BasicReport(props: IProps) {
     </View>
   );
 
-  const headerBody = () => (
-    <Form
-      initialValues={selectedReportDate}
-      onSubmit={() => {}}
-      render={({ handleSubmit, form, submitting, pristine, values }) => (
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Field
-            name="report"
-            render={(props) => (
-              <Picker
-                mode="dropdown"
-                selectedValue={props.input.value}
-                onValueChange={(value, position) => {
-                  props.input.onChange(value);
-                }}
-                iosIcon={<Icon name="ios-arrow-down" />}
-                style={{ width: '90%' }}
-                placeholder="选择"
-                placeholderStyle={{ color: '#bfc6ea' }}
-                placeholderIconColor="#007aff">
-                {report_data.map((item, index) => {
-                  return <Picker.Item key={index} label={item} value={item} />;
-                })}
-              </Picker>
-            )}></Field>
-
-          <Field
-            name="date"
-            render={(props) => (
-              <View
-                style={{
-                  justifyContent: 'flex-start',
-                  alignItems: 'baseline',
-                }}>
-                <Button
-                  warning
-                  transparent={true}
-                  onPress={() => setShowDatePicker(true)}>
-                  {
-                    <Text>{`${values.date.getFullYear()}${padNumber(
-                      values.date.getMonth() + 1,
-                    )}${padNumber(values.date.getDate())}`}</Text>
-                  }
-                </Button>
-                {showDatePicker && (
-                  <DateTimePicker
-                    testID="dateTimePicker"
-                    value={props.input.value}
-                    mode="date"
-                    is24Hour={true}
-                    display="default"
-                    onChange={(value, position) => {
-                      setShowDatePicker(false);
-                      position && props.input.onChange(position);
-                    }}
-                  />
-                )}
-              </View>
-            )}></Field>
-          <FormSpy
-            subscription={{ values: true, valid: true }}
-            onChange={(state) => {
-              const { values, valid } = state;
-              setSelectedReportDate(values);
-            }}
-          />
-        </View>
-      )}
-    />
-  );
-
   const getReportSummary = () => {
     const roadName = `${selectedHighway.name},${selectedHighway.direction},${selectedLane}`;
     const station = getStationSummary(selectedStation, false);
@@ -403,3 +332,4 @@ function BasicReport(props: IProps) {
 }
 
 export default BasicReport;
+

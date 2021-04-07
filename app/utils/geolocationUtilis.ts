@@ -4,7 +4,7 @@ const config = { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 };
 
  
 
-const getCurrentLatLong = async () => {  
+export const getCurrentLatLong = async () => {  
   const getCurrentPosition = () =>
     new Promise<GeoPosition>((resolve, error) =>
       Geolocation.getCurrentPosition(resolve, error, config),

@@ -10,7 +10,6 @@ export class HighwayFactory {
   constructor(data: IHighway, companyId: string) {
     this._name = getObjectArrayOrEmpty(data.num_names, companyId);
     this._directions = data.name_direction;
-
     this.initial_data = {
       weather: Weather_Data[0],
       name: this.getDefaultName(),

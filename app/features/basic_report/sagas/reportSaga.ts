@@ -14,6 +14,7 @@ import * as loaderActions from '../../../store/loader/actions';
 import {
   emptyUploadFile,  
 } from '../../../store/file/actions';
+import { getCurrentLatLong } from '../../../utils/geolocationUtilis';
 
 export function* createBasicReportAsync(action) {
   yield put(loaderActions.enableLoader());
@@ -21,6 +22,10 @@ export function* createBasicReportAsync(action) {
   const originalFiles = action.entity.files.map((item) => ({ ...item }));
   const files = action.entity.files.map((item) => ({ ...item, base64: '' }));
   action.entity.files = files;
+
+  // const location = yield call(getCurrentLatLong);
+  // action.entity.x =  location.Status ? location.Data?.coords.longitude : 0;
+  // action.entity.y =  location.Status ? location.Data?.coords.latitude :0;
 
   const result = yield call(createBasicReport, action.entity);
 

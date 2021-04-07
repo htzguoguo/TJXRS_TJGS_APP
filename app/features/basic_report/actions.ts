@@ -65,3 +65,23 @@ export function onDeleteBasicReportResponse(entity, response) {
     response,
   };
 }
+
+export function emptyReportList() {
+  return {
+    type: types.EMPTY_REPORT_LIST,    
+  };
+}
+
+export function setEditReport(entity) {
+  return {
+    type: types.SET_EDIT_REPORT,
+    entity
+  };
+}
+
+export function nullEditReport() {
+  return {
+    type: types.NULL_EDIT_REPORT
+  
+  };
+}

@@ -7,6 +7,7 @@ import {  IBasicReportState } from './types';
 const initialState: IBasicReportState = {  
   reports: [],
   error: '',
+  edit_report: null,
 };
 
 export const basicReportReducer = createReducer(initialState, {
@@ -47,7 +48,9 @@ export const basicReportReducer = createReducer(initialState, {
     const idx = state.reports.findIndex(item => item.caseId === entity.caseId)
     state.reports.splice(idx, 1, {...entity, id: reports[0].id, caseId: reports[0].caseId})
     return {
+      ...state,
       reports: [...state.reports],
+      edit_report: null,
       error: '',
     };
   },
@@ -71,14 +74,43 @@ export const basicReportReducer = createReducer(initialState, {
     const idx = state.reports.findIndex(item => item.caseId === entity.caseId)
     state.reports.splice(idx, 1)
     return {
+      ...state,
       reports: [...state.reports],
-      error: '',
+      error: '',       
     };
   },
   [types.DELETE_BASIC_REPORT_FAILED](state: IBasicReportState, error: string) {
     return {
       ...state,
       error,
+    };
+  },
+  [types.EMPTY_REPORT_LIST](
+    state: IBasicReportState,
+    action,
+  ) {
+    return {
+      ...state,
+      error: '',
+      reports: [],
+    };
+  },
+  [types.SET_EDIT_REPORT](
+    state: IBasicReportState,
+    action,
+  ) {
+    return {
+      ...state,
+      edit_report: action.entity
+    };
+  },
+  [types.NULL_EDIT_REPORT](
+    state: IBasicReportState,
+    action,
+  ) {
+    return {
+      ...state,
+      edit_report: null
     };
   },
 });

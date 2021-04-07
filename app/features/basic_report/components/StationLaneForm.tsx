@@ -56,6 +56,8 @@ interface IProps {
 const dataArray = [{ title: 'First Element', content: ' ' }];
 let focusOnError = createDecorator();
 export const StationForm = (componentProps: IProps) => {
+
+  console.log('componentProps', componentProps);
   const render_header = (
     handleSubmit,
     form,
@@ -392,6 +394,7 @@ export const StationForm = (componentProps: IProps) => {
             <Field name="lane">
               {(props) => (
                 <Item picker>
+                  <Text>车道</Text> 
                   <Picker
                     mode="dropdown"
                     selectedValue={componentProps.initial_lane_data}
@@ -399,7 +402,7 @@ export const StationForm = (componentProps: IProps) => {
                       componentProps.setLaneData(value);
                     }}
                     iosIcon={<Icon name="ios-arrow-down" />}
-                    style={{ width: '90%' }}
+                    style={{ width: '90%' }}                    
                     placeholder="车道"
                     placeholderStyle={{ color: '#bfc6ea' }}
                     placeholderIconColor="#007aff">

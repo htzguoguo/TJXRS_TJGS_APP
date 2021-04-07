@@ -35,7 +35,7 @@ export const loginReducer = createReducer(initialState, {
       ...state,
       error: '',
       user: action.response.user,
-      username: action.response.user.chsName,
+      username: action.response.user.truename,
       isLoggedIn: true,
     };
   },

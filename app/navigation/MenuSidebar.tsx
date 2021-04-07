@@ -18,7 +18,9 @@ import { navigationService } from "./NavigationService";
 import { useDispatch } from "react-redux";
 import * as loginActions from '../features/login/actions';
 import { IMenuDataItem } from "./types";
-const datas: IMenuDataItem[]  = [
+import { emptyUploadFile } from "../store/file/actions";
+import { emptyReportList } from "../features/basic_report/actions";
+const datas: IMenuDataItem[] = [
   {
     name: "视频监控",
     route: "BlankPage",
@@ -66,18 +68,22 @@ const datas: IMenuDataItem[]  = [
     icon: "settings",
     icon_color: "#555",
     bg: "#4DCAE0"
-  }, 
+  },
   {
     name: "退出",
     route: "logout",
     icon: "flag",
     bg: "#4DCAE0"
-  }, 
+  },
 ];
 
 export function MenuSidebar(props) {
   const dispatch = useDispatch();
-  const onLogout = () => dispatch(loginActions.logOut());
+  const onLogout = () => {
+    dispatch(emptyUploadFile());
+    dispatch(emptyReportList());
+    dispatch(loginActions.logOut());
+  }
   return (
     <Container>
       <Content
@@ -95,8 +101,8 @@ export function MenuSidebar(props) {
               noBorder
               onPress={
                 data.route === 'logout' ?
-                () => onLogout() :
-                () => navigationService.navigate(data.route)
+                  () => onLogout() :
+                  () => navigationService.navigate(data.route)
               }
             >
               <Left>

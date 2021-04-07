@@ -11,6 +11,8 @@ import * as stationActions from '../../../store/station/actions';
 import styles from './styles';
 import { IStoreState } from '../../../store/types';
 import { StandardHeader } from '../../../components/Header/StandardHeader';
+import { emptyUploadFile } from '../../../store/file/actions';
+import { emptyReportList } from '../../basic_report/actions';
 
 
 const Home: React.FC = (props) => {
@@ -20,7 +22,11 @@ const Home: React.FC = (props) => {
   const bridgeState = useSelector((state: IStoreState) => state.bridgeReducer);
   const stationState = useSelector((state: IStoreState) => state.stationReducer);
   const dispatch = useDispatch();
-  const onLogout = () => dispatch(loginActions.logOut());
+  const onLogout = () => {
+    dispatch(emptyUploadFile());
+    dispatch(emptyReportList());
+    dispatch(loginActions.logOut());
+  }
   const onQueryWorkload = () => dispatch(workloadActions.requestQueryWorkloads());
   const onQueryHighway = () => dispatch(highwayActions.requestQueryHighway());
   const onQueryBridge = () => dispatch(bridgeActions.requestQueryBridgeSubName());

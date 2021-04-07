@@ -13,6 +13,7 @@ export const Direction_Data = [
 ];
 
 export const Lands_Data = [
+  '',
   "中央隔离带",
   "路缘带",
   "第1车道",

@@ -7,6 +7,8 @@ import { IWorkloadItem } from '../../store/workload/models';
 // export const workloadSelector = (state: IStoreState):IWorkloadState  => parseWorkload(state.settingReducer.workloads);
 export const reportSelector = (state: IStoreState)  => state.basicReportReducer.reports;
 
+export const editReportSelector = (state: IStoreState)  => state.basicReportReducer.edit_report;
+
 
 
 
