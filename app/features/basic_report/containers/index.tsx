@@ -15,8 +15,14 @@ import {
 } from 'native-base';
 import { IProps } from '../types';
 import { StandardHeader } from '../../../components/Header';
-import { HighwaySelector, IHighwaySelectorData } from '../components/Highway';
-import { IStationSelectorData, StationForm } from '../components/StationForm';
+import {
+  HighwaySelector,
+  IHighwaySelectorData,
+} from '../components/HighwayForm';
+import {
+  IStationSelectorData,
+  StationForm,
+} from '../components/StationLaneForm';
 import { DiseaseForm, IDiseaseSelectorData } from '../components/DiseaseForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { requestCreateBasicReport, requestUpdateBasicReport } from '../actions';
@@ -28,20 +34,25 @@ import { padNumber } from '../../../utils/stringUtils';
 import { tempFilesSelector } from '../../../store/file/selectors';
 import { Lands_Data, Weather_Data } from '../components/highway_data';
 import { highwaySelector } from '../../../store/highway/selectors';
-import { getStationSummary } from '../helper';
+import { getFirstAvalibleDefect, getStationSummary } from '../helper';
 import { bridgeSelector } from '../../../store/bridge/selectors';
 import { stationSelector } from '../../../store/station/selectors';
 import { FooterForm } from '../components/FooterForm';
 import { ReportList } from '../components/ReportList';
 import { IReportBasicInfo } from '../model';
-import { emptyUploadFile, replaceUploadFile } from '../../../store/file/actions';
+import {
+  emptyUploadFile,
+  replaceUploadFile,
+} from '../../../store/file/actions';
 import { workloadSelector } from '../../../store/workload/selectors';
 import { LaneForm } from '../components/LaneForm';
+import { ReporterSelector } from '../components/ReportDate';
 
 const initial_data_report = {
   report: report_data[0],
   date: new Date(),
-}
+  weather: Weather_Data[0],
+};
 
 function BasicReport(props: IProps) {
   const [
@@ -54,7 +65,7 @@ function BasicReport(props: IProps) {
   const highwayData = useSelector(highwaySelector);
   const bridgeFactory = useSelector(bridgeSelector);
   const stationFactory = useSelector(stationSelector);
-  
+
   const [selectedCategory, setSelectedCategory] = useState<string>(
     workloads.initial_data.category,
   );
@@ -67,17 +78,27 @@ function BasicReport(props: IProps) {
     workloads.initial_data.inspection,
   );
 
-  const [selectedDamage, setSelectedDamage] = useState(workloads.initial_data.damage);
+  const [selectedDamage, setSelectedDamage] = useState(
+    workloads.initial_data.damage,
+  );
 
-  const [selectedDefect, setSelectedDefect] = useState(workloads.initial_data.defect);
+  const [selectedDefect, setSelectedDefect] = useState(
+    workloads.initial_data.defect,
+  );
 
-  const [selectedReportDate, setSelectedReportDate] = useState(initial_data_report);
-  const [selectedHighway, setSelectedHighway] = useState<IHighwaySelectorData>(highwayData.initial_data);
+  const [selectedReportDate, setSelectedReportDate] = useState(
+    initial_data_report,
+  );
+  const [selectedHighway, setSelectedHighway] = useState<IHighwaySelectorData>(
+    highwayData.initial_data,
+  );
   const [selectedStation, setSelectedStation] = useState<IStationSelectorData>({
     ...stationFactory.getDefaultData(selectedHighway.name),
     ...bridgeFactory.getDefaultData(selectedHighway.name),
   });
-  const [selectedLane, setSelectedLane] = useState<string>(highwayData.initial_data.lane);
+  const [selectedLane, setSelectedLane] = useState<string>(
+    highwayData.initial_data.lane,
+  );
 
   const dispatch = useDispatch();
 
@@ -109,12 +130,13 @@ function BasicReport(props: IProps) {
   };
 
   const onResetReport = () => {
+    setSelectedEditItem(null);
     setSelectedReportDate(initial_data_report);
-    setSelectedHighway(highwayData.initial_data)
+    setSelectedHighway(highwayData.initial_data);
     setSelectedStation({
       ...stationFactory.getDefaultData(selectedHighway.name),
       ...bridgeFactory.getDefaultData(selectedHighway.name),
-    })
+    });
     setSelectedLane(highwayData.initial_data.lane);
 
     setSelectedCategory(workloads.initial_data.category);
@@ -125,14 +147,14 @@ function BasicReport(props: IProps) {
     dispatch(emptyUploadFile());
   };
 
-  const setSelectedEdit = useCallback((item: IReportBasicInfo) => {     
+  const setSelectedEdit = useCallback((item: IReportBasicInfo) => {
     setSelectedEditItem(item);
     setSelectedReportDate({
       report: item.report,
       date: item.date,
+      weather: item.weather,
     });
     setSelectedHighway({
-      weather: item.weather,
       name: item.name,
       direction: item.direction,
       lane: item.lane,
@@ -177,7 +199,7 @@ function BasicReport(props: IProps) {
 
   const getReportDateData = useCallback((item) => {
     setSelectedReportDate(item);
-  }, []);  
+  }, []);
 
   const getStationData = useCallback((item) => {
     setSelectedStation(item);
@@ -188,49 +210,45 @@ function BasicReport(props: IProps) {
   }, []);
 
   const saveReport = () => (
-    <View style={{flexDirection: 'row',  }}>
-      <Button transparent onPress={
-        () => {
-          Alert.alert(
-            "提示",
-            `确定要清除输入内容?`,
-            [
-              {
-                text: "取消",               
-                style: "cancel"
+    <View style={{ flexDirection: 'row' }}>
+      <Button
+        transparent
+        onPress={() => {
+          Alert.alert('提示', `确定要清除输入内容?`, [
+            {
+              text: '取消',
+              style: 'cancel',
+            },
+            {
+              text: '确定',
+              onPress: () => {
+                onResetReport();
               },
-              {
-                text: "确定", onPress: () => {
-                  onResetReport();                   
-                }
-              }
-            ]
-          );
-        }
-      }>
+            },
+          ]);
+        }}>
         <Text>重置</Text>
       </Button>
-      <Button transparent onPress={
-        () => {
-          Alert.alert(
-            "提示",
-            `确定要上报记录?`,
-            [
-              {
-                text: "取消",               
-                style: "cancel"
+      <Button
+        transparent
+        onPress={() => {
+          const title = selectedEditItem
+            ? `确定要更新编号为[${selectedEditItem.caseId}]的记录?`
+            : `确定要上报记录?`;
+          Alert.alert('提示', `${title}`, [
+            {
+              text: '取消',
+              style: 'cancel',
+            },
+            {
+              text: '确定',
+              onPress: () => {
+                onPostBasicReport();
               },
-              {
-                text: "确定", onPress: () => {
-                  onPostBasicReport();                   
-                }
-              }
-            ]
-          );
-        }
-        
-        }>
-        <Text>上报</Text>
+            },
+          ]);
+        }}>
+        <Text>{selectedEditItem ? '更新' : '上报'}</Text>
       </Button>
     </View>
   );
@@ -279,9 +297,11 @@ function BasicReport(props: IProps) {
                   warning
                   transparent={true}
                   onPress={() => setShowDatePicker(true)}>
-                  <Text>{`${values.date.getFullYear()}${padNumber(
-                    values.date.getMonth() + 1,
-                  )}${padNumber(values.date.getDate())}`}</Text>
+                  {
+                    <Text>{`${values.date.getFullYear()}${padNumber(
+                      values.date.getMonth() + 1,
+                    )}${padNumber(values.date.getDate())}`}</Text>
+                  }
                 </Button>
                 {showDatePicker && (
                   <DateTimePicker
@@ -292,7 +312,7 @@ function BasicReport(props: IProps) {
                     display="default"
                     onChange={(value, position) => {
                       setShowDatePicker(false);
-                      props.input.onChange(position);
+                      position && props.input.onChange(position);
                     }}
                   />
                 )}
@@ -311,11 +331,12 @@ function BasicReport(props: IProps) {
   );
 
   const getReportSummary = () => {
-    const roadName = `${selectedHighway.weather},${selectedHighway.name},${selectedHighway.direction},${selectedLane}`;
+    const roadName = `${selectedHighway.name},${selectedHighway.direction},${selectedLane}`;
     const station = getStationSummary(selectedStation, false);
     let defect = '';
-    if (selectedDefect && selectedDefect.length > 0) {
-      defect = `${selectedDefect[0].dealwithdesc},${selectedDefect[0].amount},${selectedDefect[0].unit}`;
+    let foundDefect = getFirstAvalibleDefect(selectedDefect);
+    if (foundDefect) {
+      defect = `${foundDefect.dealwithdesc},${foundDefect.amount},${foundDefect.unit}`;
     }
     return `${roadName},${station},${defect}`;
   };
@@ -323,22 +344,33 @@ function BasicReport(props: IProps) {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Container>
-        <StandardHeader isHome={true} body={headerBody} right={saveReport} />
-        <Header   >
+        <StandardHeader isHome={true} body={'巡查上报'} right={saveReport} />
+        <Header>
           <Button transparent>
-            <Text  >{getReportSummary()}</Text>
+            <Text>{getReportSummary()}</Text>
           </Button>
         </Header>
         <Content style={{ padding: 1, backgroundColor: '#f4f4f4' }}>
+          <ReporterSelector
+            getData={getReportDateData}
+            Weather_Data={Weather_Data}
+            report_data={report_data}
+            initial_data={selectedReportDate}
+          />
           <HighwaySelector
             getData={getHighwayData}
             highway_data={highwayData}
-            initial_data={selectedHighway}
-            Lands_Data={Lands_Data}
-            Weather_Data={Weather_Data}
+            initial_data={selectedHighway}            
           />
-          <LaneForm setData={getLaneData} initial_data={selectedLane}  Lands_Data={Lands_Data}/>
+          {/* <LaneForm
+            setData={getLaneData}
+            initial_data={selectedLane}
+            Lands_Data={Lands_Data}
+          /> */}
           <StationForm
+            setLaneData={getLaneData}
+            initial_lane_data={selectedLane}
+            Lands_Data={Lands_Data}
             bridgeFactory={bridgeFactory}
             stationFactory={stationFactory}
             highway_name={selectedHighway.name}
@@ -346,7 +378,7 @@ function BasicReport(props: IProps) {
             initial_data={selectedStation}
           />
           <ImageViewer />
-          <DiseaseForm            
+          <DiseaseForm
             workload_data={workloads}
             // initial_data={selectedDiease}
             category={selectedCategory}

@@ -19,6 +19,7 @@ import { IReportBasicInfo } from '../model';
 import { reportSelector } from '../selectors';
 import basic_styles from '../styles';
 import { requestDeleteBasicReport } from '../actions';
+import { getFirstAvalibleDefect, getStationSummary } from '../helper';
 
 interface IProps {
   setSelected: (item: IReportBasicInfo) => void;
@@ -26,7 +27,7 @@ interface IProps {
 
 export const ReportList = (comProps: IProps) => {
   const dispatch = useDispatch();
-  const onDeleteBasicReport = (entity) => {    
+  const onDeleteBasicReport = (entity) => {
     dispatch(requestDeleteBasicReport(entity));
   };
   const reports = useSelector(reportSelector);
@@ -85,42 +86,51 @@ export const ReportList = (comProps: IProps) => {
     );
   };
 
-  const renderItem = (data) => (
-    <TouchableHighlight
-      onPress={() => console.log('You touched me')}
-      style={styles.rowFront}
-      underlayColor={'white'}>
-      <View
-        key={data.item.caseId}
-        style={{
-          flexDirection: 'row',
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <View style={{ flex: 1, justifyContent: 'center' }}>
-          <Text style={{ textAlign: 'center', fontSize: 12 }}>
-            {data.item.caseId}
-          </Text>
+  const renderItem = (data) => {
+    let foundDefect = getFirstAvalibleDefect(data.item.defect);
+    return (
+      <TouchableHighlight
+        onPress={() => console.log('You touched me')}
+        style={styles.rowFront}
+        underlayColor={'white'}>
+        <View
+          key={data.item.caseId}
+          style={{
+            flexDirection: 'row',
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <View style={{ flex: 1, justifyContent: "center" }}>
+            <TouchableOpacity onPress={() => comProps.setSelected(data.item)}>
+              <Text style={{ textAlign: "center", fontSize: 12 }}>
+                {data.item.caseId}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={{ flex: 1, justifyContent: 'center' }}>
+            <Text style={{ textAlign: 'center', fontSize: 12 }}>
+              {getStationSummary(data.item, false)}
+            </Text>
+          </View>
+          <View style={{ flex: 1, justifyContent: 'center' }}>
+            <Text style={{ textAlign: 'center', fontSize: 12 }}>
+              {
+                foundDefect &&
+                foundDefect.dealwithdesc
+              }
+            </Text>
+          </View>
+          <View style={{ flex: 1, justifyContent: 'center' }}>
+            <Text style={{ textAlign: 'center', fontSize: 12 }}>
+              {foundDefect && `${foundDefect.amount}(${foundDefect.unit})`}
+            </Text>
+          </View>
         </View>
-        <View style={{ flex: 1, justifyContent: 'center' }}>
-          <Text style={{ textAlign: 'center', fontSize: 12 }}>
-            {data.item.lane}
-          </Text>
-        </View>
-        <View style={{ flex: 1, justifyContent: 'center' }}>
-          <Text style={{ textAlign: 'center', fontSize: 12 }}>
-            {data.item.category}
-          </Text>
-        </View>
-        <View style={{ flex: 1, justifyContent: 'center' }}>
-          <Text style={{ textAlign: 'center', fontSize: 12 }}>
-            {data.item.suboption}
-          </Text>
-        </View>
-      </View>
-    </TouchableHighlight>
-  );
+      </TouchableHighlight>
+    )
+  };
 
   const closeRow = (rowMap, rowKey) => {
     if (rowMap[rowKey]) {
@@ -142,7 +152,7 @@ export const ReportList = (comProps: IProps) => {
 
   const renderHiddenItem = (data, rowMap) => (
     <View style={styles.rowBack}>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={[styles.backRightBtn, styles.backRightBtnLeft]}
       >
         <Button success onPress={
@@ -153,7 +163,7 @@ export const ReportList = (comProps: IProps) => {
         }>
           <Text>编辑</Text>
         </Button>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <TouchableOpacity
         style={[styles.backRightBtn, styles.backRightBtnRight]}
       >
@@ -171,7 +181,7 @@ export const ReportList = (comProps: IProps) => {
                 {
                   text: "确定", onPress: () => {
                     onDeleteBasicReport(data.item);
-                    deleteRow(rowMap, data.item.key);                    
+                    deleteRow(rowMap, data.item.key);
                   }
                 }
               ]
@@ -202,13 +212,13 @@ export const ReportList = (comProps: IProps) => {
               <Text style={{ textAlign: 'center' }}>案件编号</Text>
             </View>
             <View style={{ flex: 1, justifyContent: 'center' }}>
-              <Text style={{ textAlign: 'center' }}>车道</Text>
+              <Text style={{ textAlign: 'center' }}>痛害位置</Text>
             </View>
             <View style={{ flex: 1, justifyContent: 'center' }}>
-              <Text style={{ textAlign: 'center' }}>类别</Text>
+              <Text style={{ textAlign: 'center' }}>维修方案</Text>
             </View>
             <View style={{ flex: 1, justifyContent: 'center' }}>
-              <Text style={{ textAlign: 'center' }}>分项名称</Text>
+              <Text style={{ textAlign: 'center' }}>工程计量</Text>
             </View>
           </View>
         </Body>
@@ -217,7 +227,7 @@ export const ReportList = (comProps: IProps) => {
         data={copyed}
         renderItem={renderItem}
         renderHiddenItem={renderHiddenItem}
-        rightOpenValue={-150}
+        rightOpenValue={-75}
         previewRowKey={'0'}
         previewOpenValue={-40}
         previewOpenDelay={3000}

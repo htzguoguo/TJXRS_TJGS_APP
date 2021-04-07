@@ -590,7 +590,7 @@ export const DiseaseForm = (comProps: IProps) => {
               </CardItem>
             </View>
 
-            <View style={[styles.view_container, { marginBottom: 5 }]}>
+            <View style={[styles.view_container]}>
               {/* <CardItem header bordered>
                 <Text>预估工程量</Text>
               </CardItem> */}

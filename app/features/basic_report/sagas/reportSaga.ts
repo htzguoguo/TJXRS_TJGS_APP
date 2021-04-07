@@ -11,6 +11,9 @@ import { Alert } from 'react-native';
 import { createBasicReport, deleteBasicReport, updateBasicReport } from '../service';
 import * as reportActions from '../actions';
 import * as loaderActions from '../../../store/loader/actions';
+import {
+  emptyUploadFile,  
+} from '../../../store/file/actions';
 
 export function* createBasicReportAsync(action) {
   yield put(loaderActions.enableLoader());
@@ -30,6 +33,7 @@ export function* createBasicReportAsync(action) {
       ),
     );
     yield put(loaderActions.disableLoader());
+    yield put(emptyUploadFile());
     Alert.alert('提示：', '上报成功', [
       {
         text: '关闭',
@@ -58,7 +62,7 @@ export function* updateBasicReportAsync(action) {
   action.entity.files = files;
 
   const result = yield call(updateBasicReport, action.entity);
-
+  console.log(action); 
   if (result.response && result.response.status === 200) {
     action.entity.files = originalFiles;
     yield put(
@@ -68,7 +72,7 @@ export function* updateBasicReportAsync(action) {
       ),
     );
     yield put(loaderActions.disableLoader());
-    Alert.alert('提示：', `编号[${action.entity.caseId}]修改成功`, [
+    Alert.alert('提示：', `编号[${action.entity.caseid}]修改成功`, [
       {
         text: '关闭',
         style: 'cancel',
