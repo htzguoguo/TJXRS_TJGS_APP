@@ -51,5 +51,6 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   
+  
 });
 export default styles;

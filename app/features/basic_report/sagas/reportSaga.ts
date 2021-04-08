@@ -14,7 +14,7 @@ import * as loaderActions from '../../../store/loader/actions';
 import {
   emptyUploadFile,  
 } from '../../../store/file/actions';
-import { getCurrentLatLong } from '../../../utils/geolocationUtilis';
+import { getCurrentLatLong, getLocation } from '../../../utils/geolocationUtilis';
 
 export function* createBasicReportAsync(action) {
   yield put(loaderActions.enableLoader());
@@ -23,10 +23,11 @@ export function* createBasicReportAsync(action) {
   const files = action.entity.files.map((item) => ({ ...item, base64: '' }));
   action.entity.files = files;
 
-  // const location = yield call(getCurrentLatLong);
-  // action.entity.x =  location.Status ? location.Data?.coords.longitude : 0;
-  // action.entity.y =  location.Status ? location.Data?.coords.latitude :0;
-
+  const location = yield call(getCurrentLatLong);
+  console.log('location', location);
+  action.entity.x =  location.Status ? location.Data?.coords.longitude : 0;
+  action.entity.y =  location.Status ? location.Data?.coords.latitude :0;
+  
   const result = yield call(createBasicReport, action.entity);
 
   if (result.response && result.response.status === 201) {
@@ -67,7 +68,7 @@ export function* updateBasicReportAsync(action) {
   action.entity.files = files;
 
   const result = yield call(updateBasicReport, action.entity);
-  console.log(action); 
+ 
   if (result.response && result.response.status === 200) {
     action.entity.files = originalFiles;
     yield put(
@@ -100,9 +101,9 @@ export function* updateBasicReportAsync(action) {
 export function* deleteBasicReportAsync(action) {
   yield put(loaderActions.enableLoader());
   //how to call api  
-  console.log(action);
+ 
   const result = yield call(deleteBasicReport, action.entity.id);
-  console.log('deleteBasicReportAsync', result);
+ 
   if (result.response && result.response.status === 200) {
     yield put(
       reportActions.onDeleteBasicReportResponse(
@@ -130,3 +131,5 @@ export function* deleteBasicReportAsync(action) {
     ]);
   }
 }
+ 
+

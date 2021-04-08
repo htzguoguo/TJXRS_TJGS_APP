@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { SafeAreaView, Dimensions, View, Alert } from 'react-native';
-
+import Spinner from 'react-native-loading-spinner-overlay';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 import {
@@ -12,6 +12,7 @@ import {
   Button,
   Picker,
   Header,
+ 
 } from 'native-base';
 import { IProps } from '../types';
 import { StandardHeader } from '../../../components/Header';
@@ -48,6 +49,7 @@ import { workloadSelector } from '../../../store/workload/selectors';
 import { LaneForm } from '../components/LaneForm';
 import { ReporterSelector } from '../components/ReportDate';
 import { editReportSelector } from '../selectors';
+import { IStoreState } from '../../../store/types';
 
 const initial_data_report = {
   report: report_data[0],
@@ -60,6 +62,7 @@ function BasicReport(props: IProps) {
   //   selectedEditItem,
   //   setSelectedEditItem,
   // ] = useState<IReportBasicInfo | null>(null);
+  const loadingState = useSelector((state: IStoreState) => state.loadingReducer);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const tempSelectedFiles = useSelector(tempFilesSelector);
 
@@ -271,15 +274,22 @@ function BasicReport(props: IProps) {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>        
       <Container>
+      <Spinner
+          visible={loadingState.isLoading}
+          textContent={'处理中...'}
+          textStyle={{color: '#FFF'}}
+        />
         <StandardHeader isHome={true} body={'巡查上报'} right={saveReport} />
         <Header>
           <Button transparent>
             <Text>{getReportSummary()}</Text>
           </Button>
         </Header>
+      
         <Content style={{ padding: 1, backgroundColor: '#f4f4f4' }}>
+
           <ReporterSelector
             getData={getReportDateData}
             Weather_Data={Weather_Data}

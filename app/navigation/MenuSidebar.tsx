@@ -19,7 +19,7 @@ import { useDispatch } from "react-redux";
 import * as loginActions from '../features/login/actions';
 import { IMenuDataItem } from "./types";
 import { emptyUploadFile } from "../store/file/actions";
-import { emptyReportList } from "../features/basic_report/actions";
+import { emptyReportList, nullEditReport } from "../features/basic_report/actions";
 const datas: IMenuDataItem[] = [
   {
     name: "视频监控",
@@ -82,6 +82,7 @@ export function MenuSidebar(props) {
   const onLogout = () => {
     dispatch(emptyUploadFile());
     dispatch(emptyReportList());
+    dispatch(nullEditReport());
     dispatch(loginActions.logOut());
   }
   return (

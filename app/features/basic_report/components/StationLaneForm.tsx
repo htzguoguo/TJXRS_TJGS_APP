@@ -57,7 +57,7 @@ const dataArray = [{ title: 'First Element', content: ' ' }];
 let focusOnError = createDecorator();
 export const StationForm = (componentProps: IProps) => {
 
-  console.log('componentProps', componentProps);
+   
   const render_header = (
     handleSubmit,
     form,

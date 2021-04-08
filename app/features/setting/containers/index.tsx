@@ -12,7 +12,7 @@ import styles from './styles';
 import { IStoreState } from '../../../store/types';
 import { StandardHeader } from '../../../components/Header/StandardHeader';
 import { emptyUploadFile } from '../../../store/file/actions';
-import { emptyReportList } from '../../basic_report/actions';
+import { emptyReportList, nullEditReport } from '../../basic_report/actions';
 
 
 const Home: React.FC = (props) => {
@@ -25,6 +25,7 @@ const Home: React.FC = (props) => {
   const onLogout = () => {
     dispatch(emptyUploadFile());
     dispatch(emptyReportList());
+    dispatch(nullEditReport());
     dispatch(loginActions.logOut());
   }
   const onQueryWorkload = () => dispatch(workloadActions.requestQueryWorkloads());
@@ -63,7 +64,7 @@ const Home: React.FC = (props) => {
     <Container style={styles.container}>
       <StandardHeader isHome={false} body='设置' />
       {
-        loadingState.isLoading ? <Spinner /> :
+        
           <Content>
             <Separator bordered ><Text>基础数据</Text></Separator>
             {renderBasicDataItem(onQueryHighway, highwayState.highway_count, '道路基础数据')}
